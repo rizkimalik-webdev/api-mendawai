@@ -1,16 +1,22 @@
 'use strict';
-
 const knex = require('../config/db_connect');
 const bcrypt = require('bcryptjs');
+const { auth_jwt } = require('../middleware');
 
 
 exports.index = async function (req, res) {
-    if(req.method !== 'GET') return res.status(405).end();
+    try {
+        if(req.method !== 'GET') return res.status(405).end();
 
-    const users = await knex('users');
+        auth_jwt(req, res);
+        const users = await knex('users');
 
-    res.json(users);
-    res.end();
+        res.json(users);
+        res.end();
+    } 
+    catch (error) {
+        console.log(error);
+    }
 }
 
 exports.show = async function (req, res) {
