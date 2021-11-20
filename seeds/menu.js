@@ -5,9 +5,9 @@ exports.seed = function (knex) {
                 {
                     menu_name: "Dashboard",
                     number: 1,
-                    path: null,
+                    path: '/dashboard',
                     icon: null,
-                    is_root: true
+                    is_root: false
                 },
                 {
                     menu_name: "Master Data",
@@ -26,7 +26,7 @@ exports.seed = function (knex) {
                 {
                     menu_name: "Todolist",
                     number: 0,
-                    path: null,
+                    path: '/todolist',
                     icon: null,
                     is_root: false
                 },
@@ -47,9 +47,9 @@ exports.seed = function (knex) {
                 {
                     menu_name: "Management User",
                     number: 0,
-                    path: null,
+                    path: '/users',
                     icon: null,
-                    is_root: true
+                    is_root: false
                 },
                 {
                     menu_name: "Settings",

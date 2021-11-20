@@ -6,7 +6,7 @@ exports.seed = function (knex) {
                     menu_id: 2,
                     menu_modul_name: "Category",
                     number: 1,
-                    path: null,
+                    path: '/category1',
                     icon: null,
                     is_root: false
                 },
@@ -14,7 +14,7 @@ exports.seed = function (knex) {
                     menu_id: 2,
                     menu_modul_name: "Category Produk",
                     number: 2,
-                    path: null,
+                    path: '/category2',
                     icon: null,
                     is_root: false
                 },
@@ -22,7 +22,7 @@ exports.seed = function (knex) {
                     menu_id: 2,
                     menu_modul_name: "Category Case",
                     number: 3,
-                    path: null,
+                    path: '/category3',
                     icon: null,
                     is_root: false
                 },
@@ -30,7 +30,7 @@ exports.seed = function (knex) {
                     menu_id: 2,
                     menu_modul_name: "Category Detail",
                     number: 4,
-                    path: null,
+                    path: '/category4',
                     icon: null,
                     is_root: false
                 }
