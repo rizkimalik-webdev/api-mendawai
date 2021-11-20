@@ -1,5 +1,8 @@
 'use strict';
 
+//? socket.broadcast.emit = public chat
+//? socket.to(room).emit = private chat
+
 module.exports = function (io) {
     io.on('connection', (socket) => {
         console.log(socket.id);
