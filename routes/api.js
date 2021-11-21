@@ -1,5 +1,5 @@
 'use strict';
-
+// const knex = require('../config/db_connect');
 const auth = require('../controller/auth_controller');
 const menu = require('../controller/menu_controller');
 const user = require('../controller/users_controller');

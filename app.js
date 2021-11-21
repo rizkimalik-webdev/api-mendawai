@@ -3,10 +3,9 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const port = process.env.PORT || 3001;
+const port = process.env.APP_PORT || 3001;
 
 dotenv.config();
-
 express.application.prefix = express.Router.prefix = function (path, configure) {
     const router = express.Router();
     this.use(path, router);
@@ -18,24 +17,23 @@ const app = express();
 const server = http.createServer(app);
 const io = require('socket.io')(server, {
     cors: {
-        origin : ['http://localhost:3000', 'https://admin.socket.io', 'https://hoppscotch.io'],
+        origin: ['http://localhost:3000', 'https://admin.socket.io', 'https://hoppscotch.io'],
         methods: ["GET", "POST", "PUT", "DELETE"]
     }
 });
 
 //?parse application/json
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
-//? routes endpoint
-const routes = require('./routes')
-routes(app);
+//? routes api endpoint
+const api = require('./routes/api');
+api(app);
 
-
-//? sockets endpoint
-const sockets = require('./routes/sockets')
-sockets(io);
+//? routes socket endpoint
+const socket = require('./routes/socket');
+socket(io);
 
 server.listen(port, () => {
     console.log(`Server app listening at port : http://localhost:${port}`)

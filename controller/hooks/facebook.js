@@ -11,7 +11,6 @@ const facebook_token = async function (req, res) {
                 .count('page_id as jml')
                 .where({ page_id: data[i].id, channel: 'Facebook' })
                 .first();
-
                 // console.log(check);
 
             if (check.jml > 0) {
@@ -60,8 +59,7 @@ const facebook_messenger = async function (req, res) {
 
         // console.log(req.body.entry[0]);
 
-        // res.json(req.body.entry);
-        res.json(req.body);
+        res.json(req.body.entry);
         res.end();
     }
     catch (error) {
