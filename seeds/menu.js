@@ -1,61 +1,61 @@
 exports.seed = function (knex) {
-    return knex('menu_modul').del()
+    return knex('menu').truncate()
         .then(function () {
             return knex('menu').insert([
                 {
                     menu_name: "Dashboard",
                     number: 1,
-                    path: '/dashboard',
-                    icon: null,
-                    is_root: false
+                    path: null,
+                    icon: 'layout-4-block',
+                    is_root: true
                 },
                 {
                     menu_name: "Master Data",
                     number: 2,
                     path: null,
-                    icon: null,
+                    icon: 'substract',
                     is_root: true
                 },
                 {
                     menu_name: "Customers",
                     number: 0,
-                    path: null,
-                    icon: null,
-                    is_root: false
+                    path: '/customer',
+                    icon: 'user',
+                    is_root: true
                 },
                 {
                     menu_name: "Todolist",
                     number: 0,
                     path: '/todolist',
-                    icon: null,
+                    icon: 'clipboard',
                     is_root: false
                 },
                 {
                     menu_name: "Channels",
                     number: 0,
                     path: null,
-                    icon: null,
+                    icon: 'layer',
                     is_root: true
                 },
                 {
                     menu_name: "Ticket",
                     number: 0,
                     path: null,
-                    icon: null,
+                    icon: 'ticket',
                     is_root: true
                 },
-                {
-                    menu_name: "Management User",
-                    number: 0,
-                    path: '/users',
-                    icon: null,
-                    is_root: false
-                },
+                // {
+                //     menu_name: "Management User",
+                //     number: 0,
+                //     path: '/users',
+                //     icon: 'user',
+                //     is_root: false
+                // },
                 {
                     menu_name: "Settings",
                     number: 0,
                     path: null,
-                    icon: null,
+                    icon: 'setting',
                     is_root: true
                 }
             ]);
