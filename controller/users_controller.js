@@ -60,7 +60,7 @@ exports.store = async function (req, res) {
                 created_at: knex.fn.now()
             }]);
 
-        const getData = await knex('users').where({ id: getId }).first();
+        const getData = await knex('users').where({ username }).first();
 
         res.status(200);
         res.json({
