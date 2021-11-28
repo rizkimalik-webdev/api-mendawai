@@ -34,7 +34,7 @@ exports.seed = function (knex) {
                     menu_name: "Channels",
                     number: 0,
                     path: null,
-                    icon: 'layer',
+                    icon: 'group-chat',
                     is_root: true
                 },
                 {
