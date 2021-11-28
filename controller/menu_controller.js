@@ -1,6 +1,6 @@
 const knex = require('../config/db_connect');
 
-exports.menu = async function (req, res){
+const menu = async function (req, res){
     if (req.method !== 'GET') return res.status(405).end();
 
     const menus = await knex('menu');
@@ -13,3 +13,5 @@ exports.menu = async function (req, res){
     res.json(menus);
     res.end();
 }
+
+module.exports = {menu}

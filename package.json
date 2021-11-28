@@ -17,6 +17,7 @@
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.95.10",
     "mysql": "^2.18.1",
+    "nodemailer": "^6.7.2",
     "nodemon": "^2.0.12",
     "socket.io": "^4.2.0",
     "tedious": "^14.0.0"

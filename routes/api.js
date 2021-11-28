@@ -1,5 +1,6 @@
 'use strict';
 // const knex = require('../config/db_connect');
+const mail = require('../controller/mail_controller');
 const auth = require('../controller/auth_controller');
 const menu = require('../controller/menu_controller');
 const user = require('../controller/users_controller');
@@ -10,6 +11,7 @@ module.exports = function (app) {
         res.send("Application Mendawai API running!");
         res.end();
     });
+    app.route('/mail').post(mail.send_mail);
 
     app.prefix('/menu', function (api) {
         api.route('/').get(menu.menu);
@@ -25,7 +27,7 @@ module.exports = function (app) {
         api.route('/show/:id').get(user.show);
         api.route('/store').post(user.store);
         api.route('/update').put(user.update);
-        api.route('/delete/:id').delete(user.delete);
+        api.route('/delete/:id').delete(user.destroy);
     });
 
     app.prefix('/webhook', function (api) {

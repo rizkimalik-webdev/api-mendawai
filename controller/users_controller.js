@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const { auth_jwt } = require('../middleware');
 
 
-exports.index = async function (req, res) {
+const index = async function (req, res) {
     try {
         if(req.method !== 'GET') return res.status(405).end();
 
@@ -19,7 +19,7 @@ exports.index = async function (req, res) {
     }
 }
 
-exports.show = async function (req, res) {
+const show = async function (req, res) {
     try {
         if(req.method !== 'GET') return res.status(405).end('Method not Allowed');
         // const auth = await authorization(res, req);
@@ -40,7 +40,7 @@ exports.show = async function (req, res) {
 }
 
 
-exports.store = async function (req, res) {
+const store = async function (req, res) {
     try {
         if (req.method !== 'POST') return res.status(405).end('Method not Allowed');
 
@@ -75,7 +75,7 @@ exports.store = async function (req, res) {
 }
 
 
-exports.update = async function (req, res) {
+const update = async function (req, res) {
     try {
         if (req.method !== 'PUT') return res.status(405).end('Method not Allowed');
 
@@ -102,7 +102,7 @@ exports.update = async function (req, res) {
 }
 
 
-exports.delete = async function (req, res) {
+const destroy = async function (req, res) {
     try {
         if (req.method !== 'DELETE') return res.status(405).end('Method not Allowed');
 
@@ -121,3 +121,10 @@ exports.delete = async function (req, res) {
     }
 }
 
+module.exports ={
+    index,
+    show,
+    store,
+    update,
+    destroy
+}
