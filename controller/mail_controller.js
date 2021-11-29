@@ -17,8 +17,9 @@ const send_mail = function (req, res) {
         from: 'admin@redbionic.site',
         to: 'rizkimalik94@outlook.com',
         subject: 'Sending Email using Nodejs',
-        text: 'That was easy!',
-        html: "<h1>HTML version of the message</h1>"
+        // text: 'That was easy!',
+        html: "<h1>HTML version of the message</h1>",
+        attachments: [{}]
     };
 
     transporter.sendMail(mailOptions, (err, info) => {

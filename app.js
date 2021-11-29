@@ -17,7 +17,7 @@ const app = express();
 const server = http.createServer(app);
 const io = require('socket.io')(server, {
     cors: {
-        origin: ['http://localhost:3000', 'https://admin.socket.io'],
+        origin: ['http://localhost:3000','http://localhost:3002', 'https://admin.socket.io'],
         methods: ["GET", "POST", "PUT", "DELETE"]
     }
 });
