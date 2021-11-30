@@ -1,4 +1,5 @@
 const knex = require('../../config/db_connect');
+const logger = require('../log');
 
 const facebook_token = async function (req, res) {
     try {
@@ -50,6 +51,7 @@ const facebook_token = async function (req, res) {
     }
     catch (error) {
         console.log(error);
+        logger('/hooks/facebook_token', error);
     }
 }
 

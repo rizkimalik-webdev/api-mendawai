@@ -1,6 +1,7 @@
 const knex = require('../config/db_connect');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const logger = require('./log');
 
 
 exports.login = async function(req, res) {
@@ -35,6 +36,7 @@ exports.login = async function(req, res) {
     }
     catch (error) {
         console.log(error);
+        logger('/auth/login',error);
     }
 }
 
@@ -51,5 +53,6 @@ exports.logout = async function (req, res){
     }
     catch (error) {
         console.log(error);
+        logger('/auth/logout',error);
     }
 }

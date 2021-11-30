@@ -2,6 +2,7 @@
 const knex = require('../config/db_connect');
 const bcrypt = require('bcryptjs');
 const { auth_jwt } = require('../middleware');
+const logger = require('./log');
 
 
 const index = async function (req, res) {
@@ -16,6 +17,7 @@ const index = async function (req, res) {
     } 
     catch (error) {
         console.log(error);
+        logger('/user/index', error)
     }
 }
 
@@ -36,6 +38,7 @@ const show = async function (req, res) {
     } 
     catch (error) {
         console.log(error);
+        logger('/user/show', error)
     }
 }
 
@@ -71,6 +74,7 @@ const store = async function (req, res) {
     }
     catch (error) {
         console.log(error);
+        logger('/user/store', error);
     }
 }
 
@@ -98,6 +102,7 @@ const update = async function (req, res) {
     }
     catch (error) {
         console.log(error);
+        logger('/user/update', error);
     }
 }
 
@@ -118,6 +123,7 @@ const destroy = async function (req, res) {
     }
     catch (error) {
         console.log(error);
+        logger('/user/destroy', error);
     }
 }
 
