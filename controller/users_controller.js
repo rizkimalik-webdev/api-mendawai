@@ -2,7 +2,7 @@
 const knex = require('../config/db_connect');
 const bcrypt = require('bcryptjs');
 const { auth_jwt } = require('../middleware');
-const logger = require('./log');
+const logger = require('../config/logger');
 
 
 const index = async function (req, res) {

@@ -1,5 +1,5 @@
 const knex = require('../../config/db_connect');
-const logger = require('../log');
+const logger = require('../../config/logger');
 
 const facebook_token = async function (req, res) {
     try {

@@ -1,7 +1,7 @@
 const knex = require('../config/db_connect');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const logger = require('./log');
+const logger = require('../config/logger');
 
 
 exports.login = async function(req, res) {
