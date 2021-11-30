@@ -5,7 +5,7 @@ const facebook_token = async function (req, res) {
     try {
         if (req.method !== 'POST') return res.status(405).end('Method not Allowed');
 
-        const data = req.body2;
+        const data = req.body;
 
         for (let i = 0; i < data.length; i++) {
             const check = await knex('sosmed_channels')
