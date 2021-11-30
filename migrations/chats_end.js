@@ -30,4 +30,4 @@ const down = function(knex) {
     return knex.schema.dropTable('chats_end');
 };
 
-export {up, down}
+module.exports = {up, down}

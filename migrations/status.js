@@ -15,4 +15,4 @@ const down = function(knex) {
     return knex.schema.dropTable('status');
 };
 
-export {up, down}
+module.exports = {up, down}

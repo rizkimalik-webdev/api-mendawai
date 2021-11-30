@@ -14,4 +14,4 @@ const down = function(knex) {
     return knex.schema.dropTable('menu');
 };
 
-export {up, down}
+module.exports = {up, down}

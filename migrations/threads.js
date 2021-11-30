@@ -24,4 +24,4 @@ const down = function(knex) {
     return knex.schema.dropTable('threads');
 };
 
-export {up, down}
+module.exports = {up, down}

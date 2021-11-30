@@ -16,4 +16,4 @@ const down = function(knex) {
     return knex.schema.dropTable('chat_attachments');
 };
 
-export {up, down}
+module.exports = {up, down}

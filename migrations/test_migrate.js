@@ -14,4 +14,4 @@ const down = function (knex, Promise) {
     // return knex.schema.dropTable('tasks');
 }
 
-export {up, down}
+module.exports = {up, down}

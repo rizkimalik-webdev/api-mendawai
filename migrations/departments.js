@@ -12,4 +12,4 @@ const down = function(knex) {
     return knex.schema.dropTable('departments');
 };
 
-export {up, down}
+module.exports = {up, down}

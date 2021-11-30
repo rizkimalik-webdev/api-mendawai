@@ -121,7 +121,7 @@ const destroy = async function (req, res) {
     }
 }
 
-module.exports ={
+module.exports = {
     index,
     show,
     store,

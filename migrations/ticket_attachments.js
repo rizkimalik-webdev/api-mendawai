@@ -17,4 +17,4 @@ const down = function(knex) {
     return knex.schema.dropTable('ticket_attachments');
 };
 
-export {up, down}
+module.exports = {up, down}

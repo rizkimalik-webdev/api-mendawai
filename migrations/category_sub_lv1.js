@@ -16,4 +16,4 @@ const down = function(knex) {
     return knex.schema.dropTable('category_sub_lv1');
 };
 
-export {up, down}
+module.exports = {up, down}

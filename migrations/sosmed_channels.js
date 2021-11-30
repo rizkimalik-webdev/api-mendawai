@@ -18,4 +18,4 @@ const down = function(knex) {
     return knex.schema.dropTable('sosmed_channels');
 };
 
-export {up, down}
+module.exports = {up, down}

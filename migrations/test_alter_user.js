@@ -13,4 +13,4 @@ const down = function (knex) {
     // })
 
 };
-export {up, down}
+module.exports = {up, down}

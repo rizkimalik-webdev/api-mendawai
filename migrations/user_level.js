@@ -11,4 +11,4 @@ const down = function(knex) {
     return knex.schema.dropTable('user_level');
 };
 
-export {up, down}
+module.exports = {up, down}
