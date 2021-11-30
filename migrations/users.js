@@ -1,5 +1,5 @@
 
-exports.up = function(knex) {
+const up = function(knex) {
     return knex.schema.createTable('users', function(table){
         table.increments('id').primary();
         table.string('name', 100);
@@ -8,11 +8,17 @@ exports.up = function(knex) {
         table.string('password').notNullable();
         table.string('user_level', 100);
         table.integer('login', 5);
+        table.integer('aux', 5);
+        table.integer('organization', 5);
+        table.integer('department', 5);
+        table.string('role', 50);
         table.integer('max_concurrent', 10);
         table.timestamps();
     })
 };
 
-exports.down = function(knex) {
+const down = function(knex) {
     return knex.schema.dropTable('users');
 };
+
+export {up, down}

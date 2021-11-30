@@ -1,5 +1,5 @@
 
-exports.up = function(knex) {
+const up = function(knex) {
     return knex.schema.createTable('user_level', function(table){
         table.increments('id').primary();
         table.string('level_name', 100);
@@ -7,6 +7,8 @@ exports.up = function(knex) {
     })
 };
 
-exports.down = function(knex) {
+const down = function(knex) {
     return knex.schema.dropTable('user_level');
 };
+
+export {up, down}
