@@ -17,7 +17,8 @@ const index = async function (req, res) {
     } 
     catch (error) {
         console.log(error);
-        logger('/user/index', error)
+        logger('user/index', error);
+        res.status(500).end();
     }
 }
 
@@ -38,7 +39,8 @@ const show = async function (req, res) {
     } 
     catch (error) {
         console.log(error);
-        logger('/user/show', error)
+        logger('user/show', error);
+        res.status(500).end();
     }
 }
 
@@ -74,7 +76,8 @@ const store = async function (req, res) {
     }
     catch (error) {
         console.log(error);
-        logger('/user/store', error);
+        logger('user/store', error);
+        res.status(500).end();
     }
 }
 
@@ -102,7 +105,8 @@ const update = async function (req, res) {
     }
     catch (error) {
         console.log(error);
-        logger('/user/update', error);
+        logger('user/update', error);
+        res.status(500).end();
     }
 }
 
@@ -123,7 +127,8 @@ const destroy = async function (req, res) {
     }
     catch (error) {
         console.log(error);
-        logger('/user/destroy', error);
+        logger('user/destroy', error);
+        res.status(500).end();
     }
 }
 

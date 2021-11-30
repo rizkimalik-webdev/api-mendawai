@@ -5,7 +5,7 @@ const facebook_token = async function (req, res) {
     try {
         if (req.method !== 'POST') return res.status(405).end('Method not Allowed');
 
-        const data = req.body;
+        const data = req.body2;
 
         for (let i = 0; i < data.length; i++) {
             const check = await knex('sosmed_channels')
@@ -51,7 +51,8 @@ const facebook_token = async function (req, res) {
     }
     catch (error) {
         console.log(error);
-        logger('/hooks/facebook_token', error);
+        logger('hooks/facebook_token', error);
+        res.status(500).end();
     }
 }
 
@@ -61,11 +62,13 @@ const facebook_messenger = async function (req, res) {
 
         // console.log(req.body.entry[0]);
 
-        res.json(req.body.entry);
+        res.json(req.body);
         res.end();
     }
     catch (error) {
         console.log(error);
+        logger('hooks/facebook_token', error);
+        res.status(500).end();
     }
 }
 

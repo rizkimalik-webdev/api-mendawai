@@ -36,7 +36,8 @@ exports.login = async function(req, res) {
     }
     catch (error) {
         console.log(error);
-        logger('/auth/login',error);
+        logger('auth/login', error);
+        res.status(500).end();
     }
 }
 
@@ -53,6 +54,7 @@ exports.logout = async function (req, res){
     }
     catch (error) {
         console.log(error);
-        logger('/auth/logout',error);
+        logger('auth/logout',error);
+        res.status(500).end();
     }
 }
