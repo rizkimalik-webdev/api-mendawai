@@ -11,11 +11,11 @@ exports.login = async function(req, res) {
 
         //?check username
         const user = await knex('users').where({ username }).first();
-        if (!user) return res.status(401).json({ value: 'username', message: 'Username not found' });
+        if (!user) return res.status(403).json({ error: 'invalid password', value: 'username', message: 'Username not found' });
 
         //?check password
         const checkPassword = await bcrypt.compare(password, user.password)
-        if (!checkPassword) return res.status(401).json({ value: 'password', message: 'Password not match' });
+        if (!checkPassword) return res.status(403).json({ error: 'invalid password', value: 'password', message: 'Password not match' });
 
         //?login update
         await knex('users').update({ login: 1 }).where({ username });
@@ -26,7 +26,15 @@ exports.login = async function(req, res) {
             username: user.username
         }, process.env.JWT_SECRET, { expiresIn: 86400 }) //24hours
 
+        //? set cookie
+        // res.cookie('token', token, {
+        //     httpOnly: true,
+        //     secure: false,
+        //     maxAge: 86400,
+        //     signed: false,
+        // });
 
+        
         //?send token
         user.token = token;
 
@@ -49,6 +57,7 @@ exports.logout = async function (req, res){
         //?login update
         await knex('users').update({login:0}).where({username});
 
+        res.clearCookie('token');
         res.json({status: 'success'});
         res.end();
     }

@@ -1,6 +1,7 @@
 const express = require('express')
 const http = require('http');
 const bodyParser = require('body-parser');
+// const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const port = process.env.APP_PORT || 3001;
@@ -25,7 +26,12 @@ const io = require('socket.io')(server, {
 //?parse application/json
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+// app.use(cookieParser());
 app.use(cors());
+// app.use(cors({
+//     credentials: true,
+//     origin: ['http://localhost:3000'],
+// }));
 
 //? routes api endpoint
 const api = require('./routes/api');

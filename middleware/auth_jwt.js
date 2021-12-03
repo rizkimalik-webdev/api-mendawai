@@ -1,10 +1,9 @@
 'use strict';
 const jwt = require('jsonwebtoken');
 
-const auth_jwt = async function (req, res, next) {
+const auth_jwt_bearer = async function (req, res, next) {
     return new Promise((resolve, reject) => {
         const { authorization } = req.headers;
-        // console.log(authorization);
         if (!authorization) return res.status(401).end('Unauthorized');
 
         const authSplit = authorization.split(' ')
@@ -23,4 +22,19 @@ const auth_jwt = async function (req, res, next) {
     });
 }
 
-module.exports = auth_jwt;
+const auth_jwt = function (req, res, next) {
+    const token = req.cookies.token;
+    if (!token) return res.status(403).json({ message: 'empty token!' });
+    
+    try {
+        const auth = jwt.verify(token, process.env.JWT_SECRET);
+        // req.auth = auth;
+        return next();
+    } 
+    catch (error) {
+        res.clearCookie('token');
+        return res.status(403).json({ message: 'invalid token!' });
+    }
+}
+
+module.exports = {auth_jwt_bearer, auth_jwt};

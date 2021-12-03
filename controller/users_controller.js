@@ -1,7 +1,7 @@
 'use strict';
 const knex = require('../config/db_connect');
 const bcrypt = require('bcryptjs');
-const { auth_jwt } = require('../middleware');
+const { auth_jwt_bearer } = require('../middleware');
 const logger = require('../config/logger');
 
 
@@ -9,7 +9,7 @@ const index = async function (req, res) {
     try {
         if(req.method !== 'GET') return res.status(405).end();
 
-        auth_jwt(req, res);
+        auth_jwt_bearer(req, res);
         const users = await knex('users');
 
         res.json(users);
@@ -25,9 +25,8 @@ const index = async function (req, res) {
 const show = async function (req, res) {
     try {
         if(req.method !== 'GET') return res.status(405).end('Method not Allowed');
-        // const auth = await authorization(res, req);
+        auth_jwt_bearer(req, res);
         const { id } = req.params;
-
         const getUser = await knex('users').where('id',id);
         
         res.status(200);
@@ -48,6 +47,7 @@ const show = async function (req, res) {
 const store = async function (req, res) {
     try {
         if (req.method !== 'POST') return res.status(405).end('Method not Allowed');
+        auth_jwt_bearer(req, res);
 
         const { name, username, email_address, password, user_level, max_concurrent } = req.body;
         const salt = bcrypt.genSaltSync(10)
@@ -85,6 +85,7 @@ const store = async function (req, res) {
 const update = async function (req, res) {
     try {
         if (req.method !== 'PUT') return res.status(405).end('Method not Allowed');
+        auth_jwt_bearer(req, res);
 
         const { id, name, username, email_address, password, user_level, max_concurrent } = req.body;
         const salt = bcrypt.genSaltSync(10)
@@ -114,6 +115,7 @@ const update = async function (req, res) {
 const destroy = async function (req, res) {
     try {
         if (req.method !== 'DELETE') return res.status(405).end('Method not Allowed');
+        auth_jwt_bearer(req, res);
 
         const { id } = req.params;
         const deleteRow = await knex('users').where({ id }).del();

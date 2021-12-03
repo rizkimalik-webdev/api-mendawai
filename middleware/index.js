@@ -1,5 +1,5 @@
-const auth_jwt = require("./auth_jwt");
+const {auth_jwt_bearer,auth_jwt} = require("./auth_jwt");
 
 module.exports = {
-    auth_jwt,
+    auth_jwt_bearer,auth_jwt,
 }

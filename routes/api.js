@@ -1,5 +1,6 @@
 'use strict';
 // const knex = require('../config/db_connect');
+// const { auth_jwt } = require('../middleware');
 const mail = require('../controller/mail_controller');
 const auth = require('../controller/auth_controller');
 const menu = require('../controller/menu_controller');
@@ -8,7 +9,7 @@ const { facebook, twitter, instagram } = require('../controller/hooks');
 
 module.exports = function (app) {
     app.route('/').get(function (req, res) {
-        res.send("Application Mendawai API running!");
+        res.json({ message: "Application Mendawai API running! 🤘" });
         res.end();
     });
     app.route('/mail').post(mail.send_mail);
@@ -22,7 +23,7 @@ module.exports = function (app) {
         api.route('/logout').post(auth.logout);
     });
 
-    app.prefix('/user', function (api) {
+    app.prefix('/user',  function (api) {
         api.route('/').get(user.index);
         api.route('/show/:id').get(user.show);
         api.route('/store').post(user.store);
