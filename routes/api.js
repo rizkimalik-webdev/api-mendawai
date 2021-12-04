@@ -1,5 +1,4 @@
 'use strict';
-// const knex = require('../config/db_connect');
 // const { auth_jwt } = require('../middleware');
 const mail = require('../controller/mail_controller');
 const auth = require('../controller/auth_controller');
@@ -31,15 +30,13 @@ module.exports = function (app) {
         api.route('/delete/:id').delete(user.destroy);
     });
 
-    app.prefix('/webhook', function (api) {
+    app.prefix('/hooks', function (api) {
         api.route('/facebook/token').post(facebook.facebook_token);
         api.route('/facebook/messenger').post(facebook.facebook_messenger);
         api.route('/facebook/feed').post(facebook.facebook_feed);
         api.route('/facebook/mention').post(facebook.facebook_mention);
-
         api.route('/instagram/token').post(instagram.instagram_token);
         api.route('/instagram/feed').post(instagram.instagram_feed);
-
         api.route('/twitter/token').post(twitter.twitter_token);
         api.route('/twitter/directmessage').post(twitter.twitter_directmessage);
         api.route('/twitter/mention').post(twitter.twitter_mention);

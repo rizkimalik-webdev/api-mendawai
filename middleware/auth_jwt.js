@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const auth_jwt_bearer = async function (req, res, next) {
     return new Promise((resolve, reject) => {
         const { authorization } = req.headers;
-        if (!authorization) return res.status(401).end('Unauthorized');
+        if (!authorization) return res.status(401).json({ message: 'Unauthorized!' });
 
         const authSplit = authorization.split(' ')
         const [authType, authToken] = [

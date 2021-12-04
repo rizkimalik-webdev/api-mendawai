@@ -12,7 +12,6 @@ const up = function(knex) {
         table.integer('organization', 5);
         table.integer('department', 5);
         table.string('role', 50);
-        table.integer('max_concurrent', 10);
         table.timestamps();
     })
 };

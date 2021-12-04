@@ -26,8 +26,9 @@ const io = require('socket.io')(server, {
 //?parse application/json
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(cookieParser());
 app.use(cors());
+
+// app.use(cookieParser());
 // app.use(cors({
 //     credentials: true,
 //     origin: ['http://localhost:3000'],
