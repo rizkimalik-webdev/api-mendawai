@@ -30,10 +30,7 @@ const show = async function (req, res) {
         const getUser = await knex('users').where('id',id);
         
         res.status(200);
-        res.json({ 
-            status: 200,
-            data: getUser 
-        });
+        res.json(getUser);
         res.end();
     } 
     catch (error) {
@@ -68,10 +65,7 @@ const store = async function (req, res) {
         const getData = await knex('users').where({ username }).first();
 
         res.status(200);
-        res.json({
-            status: 200,
-            data: getData
-        });
+        res.json(getData);
         res.end();
     }
     catch (error) {
@@ -88,20 +82,17 @@ const update = async function (req, res) {
         auth_jwt_bearer(req, res);
 
         const { id, name, username, email_address, password, user_level, max_concurrent } = req.body;
-        const salt = bcrypt.genSaltSync(10)
-        const passwordHash = bcrypt.hashSync(password, salt)
+        // const salt = bcrypt.genSaltSync(10)
+        // const passwordHash = bcrypt.hashSync(password, salt)
 
         const getId = await knex('users')
             .where({ id })
-            .update({ name, username, email_address, password: passwordHash, user_level, max_concurrent, updated_at: knex.fn.now() })
+            .update({ name, username, email_address, /* password: passwordHash, */ user_level, max_concurrent })
 
         const getData = await knex('users').where({ id: id }).first();
 
         res.status(200);
-        res.json({
-            'status': 200,
-            'data': getData
-        });
+        res.json(getData);
         res.end();
     }
     catch (error) {
