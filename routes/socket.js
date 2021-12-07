@@ -3,33 +3,26 @@
 //? socket.to(room).emit = private chat
 
 module.exports = function (io) {
-    let clients = {}
-
-    //? middleware auth.username
     io.use((socket, next) => { 
+        //? middleware auth.username
         const username = socket.handshake.auth.username; 
         if (!username) {
             return next(
-                console.log(`${socket.id} ${username} - invalid username`)
+                console.log(`${socket.id} - invalid username`)
             ); 
         } 
-        else{
-            console.log(`${socket.id} ${username}`);
-        }
         socket.username = username; 
         next(); 
     });
 
     io.on('connection', (socket) => {
-        clients[socket.id] = socket;
+        let users = {}
+        users[socket.id] = socket;
 
-        socket.on('send-message', (content) => {
-            const json = JSON.stringify(content);
-            console.log(`message : ` + json);
+        socket.on('send-message-agent', (content) => {
+            socket.to(content.client_id).emit('return-message-agent', content);
+            console.log(`message-agent : ` + JSON.stringify(content));
 
-            socket.to(content.to).emit('return-message', content);
-
-            // socket.to(res.room).emit('return-message', res)
             // socket.broadcast.emit('return-message', res);
             // if (room === ""){
             //     socket.broadcast.emit('return-message', res);
@@ -39,20 +32,20 @@ module.exports = function (io) {
             // }
         });
 
-        socket.on('join-room', (res) => {
-            console.log(`${res.username} ${socket.id} - joined: ${res.room_id}`);
-            socket.join(res.room_id)
+        socket.on('send-message-client', (content) => {
+            socket.to(content.agent_id).emit('return-message-client', content);
+            console.log('message-client: ' + JSON.stringify(content));
         });
 
-        socket.on('send-message-client', (res) => {
-            const json = JSON.stringify(res);
-            console.log('message-client: ' + json);
-            socket.to(res.room).emit('return-message-client', res);
+
+        socket.on('join-room', (res) => {
+            console.log(`joined: ${res.room_id}`);
+            socket.join(res.room_id)
         });
 
 
         socket.on('disconnect', (res) => {
-            delete clients[socket.id];
+            delete users[socket.id];
             console.log(`${socket.id} - ${res}`);
         });
     });
