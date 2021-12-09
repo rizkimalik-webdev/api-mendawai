@@ -2,6 +2,7 @@ const knex = require('../config/db_connect');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const logger = require('../config/logger');
+const response = require('../helper/json_response');
 
 
 exports.login = async function(req, res) {
@@ -33,14 +34,10 @@ exports.login = async function(req, res) {
         //     maxAge: 86400,
         //     signed: false,
         // });
-
         
         //?send token
         user.token = token;
-
-        // response(res, data, 'User login success');
-        res.json(user);
-        res.end();
+        response.ok(res, user);
     }
     catch (error) {
         console.log(error);
@@ -56,10 +53,7 @@ exports.logout = async function (req, res){
         
         //?login update
         await knex('users').update({login:0}).where({username});
-
-        res.clearCookie('token');
-        res.json({status: 'success'});
-        res.end();
+        response.ok(res, {message:'logout success'});
     }
     catch (error) {
         console.log(error);
