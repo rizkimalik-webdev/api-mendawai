@@ -1,18 +1,27 @@
 'use strict';
+
+const { insert_customer } = require("../controller/customer_controller");
+
 //? socket.broadcast.emit = public chat
 //? socket.to(room).emit = private chat
 
 module.exports = function (io) {
-    io.use((socket, next) => { 
-        //? middleware auth.username
-        const username = socket.handshake.auth.username; 
+    //? middleware auth.username
+    io.use((socket, next) => {
+        const { user_flag, username, email } = socket.handshake.auth;
         if (!username) {
             return next(
-                console.log(`${socket.id} - invalid username`)
-            ); 
-        } 
-        socket.username = username; 
-        next(); 
+                delete socket.id
+                // console.log(`${socket.id} - invalid username`)
+            );
+        }
+        socket.username = username;
+        if (user_flag === 'customer' && email !== undefined) {
+            console.log(user_flag, username, email);
+            const customer = { username, email }
+            insert_customer(customer)
+        }
+        next();
     });
 
     io.on('connection', (socket) => {
@@ -39,8 +48,8 @@ module.exports = function (io) {
 
 
         socket.on('join-room', (res) => {
-            console.log(`joined: ${res.room_id}`);
-            socket.join(res.room_id)
+            console.log(`joined: ${res.room}`);
+            socket.join(res.room)
         });
 
 
