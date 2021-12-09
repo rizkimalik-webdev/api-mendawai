@@ -1,17 +1,17 @@
 'use strict';
 
 const { insert_customer } = require("../controller/customer_controller");
+const { join_chat } = require("../controller/sosmed_controller");
 
 //? socket.broadcast.emit = public chat
 //? socket.to(room).emit = private chat
-
 module.exports = function (io) {
     //? middleware auth.username
     io.use((socket, next) => {
         const { user_flag, username, email } = socket.handshake.auth;
         if (!username) {
             return next(
-                delete socket.id
+                // delete socket.id
                 // console.log(`${socket.id} - invalid username`)
             );
         }
@@ -29,27 +29,20 @@ module.exports = function (io) {
         users[socket.id] = socket;
 
         socket.on('send-message-agent', (content) => {
-            socket.to(content.client_id).emit('return-message-agent', content);
+            socket.to(content.socket_custid).emit('return-message-agent', content);
             console.log(`message-agent : ` + JSON.stringify(content));
-
-            // socket.broadcast.emit('return-message', res);
-            // if (room === ""){
-            //     socket.broadcast.emit('return-message', res);
-            // }
-            // else {
-            //     socket.to(room).emit('return-message', res)
-            // }
         });
 
         socket.on('send-message-client', (content) => {
-            socket.to(content.agent_id).emit('return-message-client', content);
+            socket.to(content.socket_agentid).emit('return-message-client', content);
             console.log('message-client: ' + JSON.stringify(content));
         });
 
 
-        socket.on('join-room', (res) => {
-            console.log(`joined: ${res.room}`);
-            socket.join(res.room)
+        socket.on('join-chat', (content) => {
+            console.log(`joined: ${content.email}`);
+            join_chat(content)
+            // socket.join(res.room)
         });
 
 
