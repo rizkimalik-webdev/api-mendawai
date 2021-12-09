@@ -29,7 +29,8 @@ const join_chat = async function (req) {
                 customer_id: customer_id,
                 flag_to: 'customer',
                 status_chat: 'waiting',
-                flag_end: 'N'
+                flag_end: 'N',
+                date_create: knex.fn.now()
             }]);
         }
         else{
