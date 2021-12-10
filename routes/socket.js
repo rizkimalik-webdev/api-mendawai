@@ -1,7 +1,7 @@
 'use strict';
 
 const { insert_customer } = require("../controller/customer_controller");
-const { join_chat } = require("../controller/sosmed_controller");
+const { join_chat, conversation_customer } = require("../controller/sosmed_controller");
 
 //? socket.broadcast.emit = public chat
 //? socket.to(room).emit = private chat
@@ -36,12 +36,15 @@ module.exports = function (io) {
         socket.on('send-message-client', (content) => {
             socket.to(content.socket_agentid).emit('return-message-client', content);
             console.log('message-client: ' + JSON.stringify(content));
+            conversation_customer(content);
         });
 
 
         socket.on('join-chat', (content) => {
-            console.log(`joined: ${content.email}`);
-            join_chat(content)
+            console.log(`joined: ${content.username}`);
+            join_chat(content).then((val) => {
+                socket.to(content.user_id).emit('return-join-chat', val);
+            });
             // socket.join(res.room)
         });
 

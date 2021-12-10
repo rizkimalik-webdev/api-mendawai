@@ -5,6 +5,7 @@ const auth = require('../controller/auth_controller');
 const menu = require('../controller/menu_controller');
 const user = require('../controller/users_controller');
 const { facebook, twitter, instagram } = require('../controller/hooks');
+const { blending } = require('../controller/sosmed_controller');
 
 module.exports = function (app) {
     app.route('/').get(function (req, res) {
@@ -12,6 +13,7 @@ module.exports = function (app) {
         res.end();
     });
     app.route('/mail').post(mail.send_mail);
+    app.route('/blending').post(blending);
 
     app.prefix('/menu', function (api) {
         api.route('/').get(menu.menu);
