@@ -1,23 +1,22 @@
 'use strict';
 
 const { insert_customer } = require("../controller/customer_controller");
-const { join_chat, conversation_customer } = require("../controller/sosmed_controller");
+const { join_chat, insert_message_customer, insert_message_agent } = require("../controller/sosmed_controller");
 
 //? socket.broadcast.emit = public chat
 //? socket.to(room).emit = private chat
 module.exports = function (io) {
     //? middleware auth.username
     io.use((socket, next) => {
-        const { user_flag, username, email } = socket.handshake.auth;
+        const { flag_to, username, email } = socket.handshake.auth;
         if (!username) {
-            return next(
-                // delete socket.id
-                // console.log(`${socket.id} - invalid username`)
-            );
+            const err = new Error("not authorized");  
+            next(err);
         }
+        
         socket.username = username;
-        if (user_flag === 'customer' && email !== undefined) {
-            console.log(user_flag, username, email);
+        if (flag_to === 'customer' && email !== undefined) {
+            console.log(flag_to, username, email);
             const customer = { username, email }
             insert_customer(customer)
         }
@@ -29,23 +28,24 @@ module.exports = function (io) {
         users[socket.id] = socket;
 
         socket.on('send-message-agent', (content) => {
+            // console.log(`message-agent : ` + JSON.stringify(content));
             socket.to(content.socket_custid).emit('return-message-agent', content);
-            console.log(`message-agent : ` + JSON.stringify(content));
+            insert_message_agent(content);
         });
 
-        socket.on('send-message-client', (content) => {
-            socket.to(content.socket_agentid).emit('return-message-client', content);
-            console.log('message-client: ' + JSON.stringify(content));
-            conversation_customer(content);
+        socket.on('send-message-customer', (content) => {
+            // console.log('message-customer: ' + JSON.stringify(content));
+            socket.to(content.socket_agentid).emit('return-message-customer', content);
+            insert_message_customer(content);
         });
 
 
         socket.on('join-chat', (content) => {
-            console.log(`joined: ${content.username}`);
             join_chat(content).then((val) => {
-                socket.to(content.user_id).emit('return-join-chat', val);
+                socket.to(val.user_id).emit('return-join-chat', val);
+                console.log(`${val.email}, join chat: ${val.chat_id}`);
             });
-            // socket.join(res.room)
+            // socket.join(val.chat_id);
         });
 
 
