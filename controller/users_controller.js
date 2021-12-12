@@ -112,23 +112,18 @@ const reset_password = async function (req, res) {
     try {
         if (req.method !== 'PUT') return res.status(405).end('Method not Allowed');
         auth_jwt_bearer(req, res);
-        const { password } = req.body;
+        const { id,password } = req.body;
         const salt = bcrypt.genSaltSync(10)
         const passwordHash = bcrypt.hashSync(password, salt)
 
-        const getId = await knex('users')
+        await knex('users')
             .where({ id })
-            .update({ password: passwordHash})
-
-        const getData = await knex('users').where({ id: id }).first();
-
-        res.status(200);
-        res.json(getData);
-        res.end();
+            .update({ password: passwordHash});
+        response.ok(res, 'success reset password');
     }
     catch (error) {
         console.log(error);
-        logger('user/update', error);
+        logger('user/reset_password', error);
         res.status(500).end();
     }
 }

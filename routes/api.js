@@ -33,6 +33,7 @@ module.exports = function (app) {
         api.route('/show/:id').get(user.show);
         api.route('/store').post(user.store);
         api.route('/update').put(user.update);
+        api.route('/reset_password').put(user.reset_password);
         api.route('/delete/:id').delete(user.destroy);
     });
 
