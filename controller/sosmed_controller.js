@@ -42,7 +42,7 @@ const join_chat = async function (req) {
                     date_create: knex.fn.now()
                 }]);
         }
-        
+
         await knex('chats').where({ email }).update({ user_id });
         const result = await knex('chats').where({ customer_id }).first();
 
@@ -66,7 +66,7 @@ const insert_message_customer = async function (req) {
             agent_handle
         } = req;
 
-        const { date_assign } = await knex('chats').select('date_assign').where({chat_id,customer_id}).first();
+        const { date_assign } = await knex('chats').select('date_assign').where({ chat_id, customer_id }).first();
 
         await knex('chats')
             .insert([{
@@ -108,7 +108,7 @@ const insert_message_agent = async function (req) {
             agent_handle
         } = req;
 
-        const { date_assign } = await knex('chats').select('date_assign').where({chat_id,customer_id}).first();
+        const { date_assign } = await knex('chats').select('date_assign').where({ chat_id, customer_id }).first();
 
         await knex('chats')
             .insert([{
@@ -138,33 +138,9 @@ const insert_message_agent = async function (req) {
     }
 }
 
-const blending = async function (req, res) {
-    try {
-        const chat = await knex('chats')
-            .select('chat_id')
-            .where({
-                agent_handle: null,
-                status_chat: 'waiting',
-                flag_to: 'customer',
-                flag_end: 'N'
-            }).first();
-
-        if (chat) {
-            await knex('chats')
-                .update({ agent_handle: 'admin', date_assign: knex.fn.now() })
-                .where({ chat_id: chat.chat_id })
-        }
-        response.ok(res, chat);
-    } catch (error) {
-        console.log(error);
-        logger('sosmed/blending', error);
-    }
-}
-
 module.exports = {
     list_customers,
     join_chat,
     insert_message_customer,
     insert_message_agent,
-    blending
 }

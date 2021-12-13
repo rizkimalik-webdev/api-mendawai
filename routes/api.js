@@ -5,7 +5,8 @@ const auth = require('../controller/auth_controller');
 const menu = require('../controller/menu_controller');
 const user = require('../controller/users_controller');
 const { facebook, twitter, instagram } = require('../controller/hooks');
-const { blending, list_customers } = require('../controller/sosmed_controller');
+const { list_customers } = require('../controller/sosmed_controller');
+const { blending } = require('../controller/blending_controller');
 
 module.exports = function (app) {
     app.route('/').get(function (req, res) {
