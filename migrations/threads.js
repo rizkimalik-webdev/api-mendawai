@@ -5,17 +5,17 @@ const up = function(knex) {
         table.string('value_thread', 100).notNullable();
         table.string('genesys_number', 100).notNullable();
         table.string('thread_id', 100);
-        table.string('account', 150);
-        table.string('account_contact_id', 150);
-        table.string('agent_id', 100);
-        table.text('subject');
-        table.string('ticket_number', 100);
-        table.string('type', 20);
-        table.text('thread_reason');
-        table.string('customer_id', 100);
-        table.string('phone_chat', 100);
-        table.string('user_create', 100);
-        table.string('user_update', 100);
+        table.string('account', 150).nullable();
+        table.string('account_contact_id', 150).nullable();
+        table.string('agent_id', 100).nullable();
+        table.text('subject').nullable();
+        table.string('ticket_number', 100).nullable();
+        table.string('type', 20).nullable();
+        table.text('thread_reason').nullable();
+        table.string('customer_id', 100).nullable();
+        table.string('phone_chat', 100).nullable();
+        table.string('user_create', 100).nullable();
+        table.string('user_update', 100).nullable();
         table.timestamps();
     })
 };

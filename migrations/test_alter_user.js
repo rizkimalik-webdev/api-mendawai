@@ -1,4 +1,4 @@
-
+/* 
 const up = function (knex) {
     // return knex.schema.alterTable('users', function (table) {
     //     table.integer('group', 5);
@@ -13,4 +13,4 @@ const down = function (knex) {
     // })
 
 };
-module.exports = {up, down}
+module.exports = {up, down} */

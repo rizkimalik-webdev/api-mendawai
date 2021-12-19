@@ -5,7 +5,7 @@ const up = function(knex) {
         table.string('ticket_number').notNullable();
         table.string('genesys_id', 50);
         table.string('thread_id', 50);
-        table.string('response_complaint');
+        table.text('response_complaint');
         table.string('status', 50);
         table.string('channel', 50);
         table.string('user_create', 100);

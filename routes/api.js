@@ -16,7 +16,7 @@ module.exports = function (app) {
     app.route('/mail').post(mail.send_mail);
     
     app.prefix('/sosmed', function (api) {
-        api.route('/list_customers').post(list_customers);
+        api.route('/list_customers').get(list_customers);
         api.route('/blending').post(blending);
     });
     
