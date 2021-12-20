@@ -7,19 +7,13 @@ const user = require('../controller/users_controller');
 const { facebook, twitter, instagram } = require('../controller/hooks');
 const { list_customers } = require('../controller/sosmed_controller');
 const { blending } = require('../controller/blending_controller');
+const { user_level } = require('../controller/user_level_crontroller');
 
 module.exports = function (app) {
     app.route('/').get(function (req, res) {
         res.json({ message: "Application Mendawai API running! 🤘" });
         res.end();
     });
-    app.route('/mail').post(mail.send_mail);
-    
-    app.prefix('/sosmed', function (api) {
-        api.route('/list_customers').get(list_customers);
-        api.route('/blending').post(blending);
-    });
-    
     app.prefix('/menu', function (api) {
         api.route('/').get(menu.menu);
     });
@@ -28,6 +22,16 @@ module.exports = function (app) {
         api.route('/login').post(auth.login);
         api.route('/logout').post(auth.logout);
     });
+
+    app.route('/user_level').get(user_level);
+    app.route('/mail').post(mail.send_mail);
+    
+    app.prefix('/sosmed', function (api) {
+        api.route('/list_customers').get(list_customers);
+        api.route('/blending').post(blending);
+    });
+    
+    
 
     app.prefix('/user',  function (api) {
         api.route('/').get(user.index);

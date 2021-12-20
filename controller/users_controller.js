@@ -8,11 +8,11 @@ const response = require('../helper/json_response');
 
 const index = async function (req, res) {
     try {
-        if(req.method !== 'GET') return res.status(405).end();
+        if (req.method !== 'GET') return res.status(405).end();
         auth_jwt_bearer(req, res);
-        const users = await knex('users').orderBy(['username','user_level']);
+        const users = await knex('users').orderBy(['username', 'user_level']);
         response.ok(res, users);
-    } 
+    }
     catch (error) {
         console.log(error);
         logger('user/index', error);
@@ -22,12 +22,12 @@ const index = async function (req, res) {
 
 const show = async function (req, res) {
     try {
-        if(req.method !== 'GET') return res.status(405).end('Method not Allowed');
+        if (req.method !== 'GET') return res.status(405).end('Method not Allowed');
         auth_jwt_bearer(req, res);
         const { id } = req.params;
-        const getUser = await knex('users').where('id',id);
+        const getUser = await knex('users').where('id', id);
         response.ok(res, getUser);
-    } 
+    }
     catch (error) {
         console.log(error);
         logger('user/show', error);
@@ -40,8 +40,35 @@ const store = async function (req, res) {
     try {
         if (req.method !== 'POST') return res.status(405).end('Method not Allowed');
         auth_jwt_bearer(req, res);
+        const {
+            name,
+            username,
+            email_address,
+            password,
+            user_level,
+            // organization,
+            inbound,
+            outbound,
+            sms,
+            email,
+            chat,
+            facebook,
+            twitter,
+            instagram,
+            whatsapp,
+            max_inbound,
+            max_outbound,
+            max_sms,
+            max_email,
+            max_chat,
+            max_facebook,
+            max_twitter,
+            max_instagram,
+            max_whatsapp,
+            max_queue,
+            max_concurrent,
+        } = req.body;
 
-        const { name, username, email_address, password, user_level, max_concurrent } = req.body;
         const salt = bcrypt.genSaltSync(10)
         const passwordHash = bcrypt.hashSync(password, salt)
 
@@ -53,6 +80,27 @@ const store = async function (req, res) {
                 password: passwordHash,
                 user_level,
                 login: 0,
+                aux: 0,
+                organization:1,
+                inbound,
+                outbound,
+                sms,
+                email,
+                chat,
+                facebook,
+                twitter,
+                instagram,
+                whatsapp,
+                max_inbound,
+                max_outbound,
+                max_sms,
+                max_email,
+                max_chat,
+                max_facebook,
+                max_twitter,
+                max_instagram,
+                max_whatsapp,
+                max_queue,
                 max_concurrent,
                 created_at: knex.fn.now()
             }]);
@@ -112,13 +160,13 @@ const reset_password = async function (req, res) {
     try {
         if (req.method !== 'PUT') return res.status(405).end('Method not Allowed');
         auth_jwt_bearer(req, res);
-        const { id,password } = req.body;
+        const { id, password } = req.body;
         const salt = bcrypt.genSaltSync(10)
         const passwordHash = bcrypt.hashSync(password, salt)
 
         await knex('users')
             .where({ id })
-            .update({ password: passwordHash});
+            .update({ password: passwordHash });
         response.ok(res, 'success reset password');
     }
     catch (error) {
