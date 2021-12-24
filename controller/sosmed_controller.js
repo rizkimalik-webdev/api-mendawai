@@ -66,7 +66,8 @@ const insert_message_customer = async function (req) {
             agent_handle
         } = req;
 
-        const { date_assign } = await knex('chats').select('date_assign').where({ chat_id, customer_id }).first();
+        const { date_assign } = await knex('chats').select('date_assign').where({ email }).first();
+        await knex('chats').where({ email,flag_to: 'customer'}).whereNot({user_id}).update({ user_id });
 
         await knex('chats')
             .insert([{

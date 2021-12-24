@@ -18,7 +18,7 @@ const blending = async function (req, res) {
         const { username } = await knex('users')
             .select('username')
             .where({
-                user_level: 'Agent',
+                user_level: 'Layer1',
                 login: 1,
                 chat: true
             })
