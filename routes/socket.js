@@ -1,8 +1,6 @@
 'use strict';
 
-// const now = new Date();
-// const date = require('date-and-time');
-const { insert_customer } = require("../controller/customer_controller");
+const { insert_customer_sosmed } = require("../controller/customer_controller");
 const { join_chat, insert_message_customer, insert_message_agent } = require("../controller/sosmed_controller");
 
 //? socket.broadcast.emit = public chat
@@ -20,7 +18,7 @@ module.exports = function (io) {
         if (flag_to === 'customer' && email !== undefined) {
             console.log(flag_to, username, email);
             const customer = { username, email }
-            insert_customer(customer)
+            insert_customer_sosmed(customer)
         }
         next();
     });
@@ -31,14 +29,12 @@ module.exports = function (io) {
 
         socket.on('send-message-agent', (content) => {
             // console.log(`message-agent : ` + JSON.stringify(content));
-            // content.datetime = date.format(now, 'YYYY-MM-DD HH:mm:ss');  
             socket.to(content.socket_custid).emit('return-message-agent', content);
             insert_message_agent(content);
         });
 
         socket.on('send-message-customer', (content) => {
             // console.log('message-customer: ' + JSON.stringify(content));
-            // content.datetime = date.format(now, 'YYYY-MM-DD HH:mm:ss');  
             socket.to(content.socket_agentid).emit('return-message-customer', content);
             insert_message_customer(content);
         });

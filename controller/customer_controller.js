@@ -106,7 +106,7 @@ const destroy = async function (req, res) {
     }
 }
 
-const insert_customer = async function (req) {
+const insert_customer_sosmed = async function (req) {
     try {
         const { username, email } = req;
         const now = new Date();
@@ -136,5 +136,5 @@ module.exports = {
     store,
     update,
     destroy,
-    insert_customer
+    insert_customer_sosmed
 }

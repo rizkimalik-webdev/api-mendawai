@@ -56,6 +56,30 @@ exports.seed = function (knex) {
                     is_root: false
                 },
 
+                /* modul channels */
+                { 
+                    menu_id: 5,
+                    menu_modul_name: "Inbound",
+                    number: 0,
+                    path: '/channel_inbound',
+                    icon: null,
+                    is_root: false
+                },{ 
+                    menu_id: 5,
+                    menu_modul_name: "Email",
+                    number: 0,
+                    path: '/channel_email',
+                    icon: null,
+                    is_root: false
+                },{ 
+                    menu_id: 5,
+                    menu_modul_name: "Social Media",
+                    number: 0,
+                    path: '/channel_socmed',
+                    icon: null,
+                    is_root: false
+                },
+
                 /* modul ticket */
                 { 
                     menu_id: 6,

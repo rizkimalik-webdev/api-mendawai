@@ -21,7 +21,7 @@ exports.seed = function (knex) {
                     number: 0,
                     path: '/customer',
                     icon: 'user',
-                    is_root: true
+                    is_root: false
                 },
                 {
                     menu_name: "Todolist",
