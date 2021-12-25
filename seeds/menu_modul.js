@@ -100,9 +100,16 @@ exports.seed = function (knex) {
                 /* modul setting */
                 { 
                     menu_id: 7,
-                    menu_modul_name: "Management User",
+                    menu_modul_name: "User Management",
                     number: 0,
                     path: '/user',
+                    icon: null,
+                    is_root: false
+                },{ 
+                    menu_id: 7,
+                    menu_modul_name: "User Privillage",
+                    number: 0,
+                    path: '/user_privillage',
                     icon: null,
                     is_root: false
                 },{ 

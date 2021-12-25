@@ -14,9 +14,10 @@ module.exports = function (app) {
         res.json({ message: "Application Mendawai API running! 🤘" });
         res.end();
     });
-    app.prefix('/menu', function (api) {
-        api.route('/').get(menu.menu);
-    });
+    app.route('/menu').get(menu.menu);
+    app.route('/menu_access/:user_level').get(menu.menu_access);
+    app.route('/store_access').post(menu.store_access);
+    app.route('/delete_access/:id').delete(menu.delete_access);
 
     app.prefix('/auth', function (api) {
         api.route('/login').post(auth.login);

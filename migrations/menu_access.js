@@ -8,7 +8,7 @@ const up = function(knex) {
         table.integer('menu_modul_id', 10);
         table.integer('menu_submodul_id', 10);
         table.string('user_create');
-        table.timestamp('create_at');
+        table.timestamps();
     })
 };
 
