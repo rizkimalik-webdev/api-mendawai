@@ -46,14 +46,50 @@ const menu_access = async function (req, res) {
 
 const store_access = async function (req, res) {
     if (req.method !== 'POST') return res.status(405).end();
-    const { user_level, menu_id, menu_modul_id, menu_submodul_id, user_create } = req.body;
-    const check = await knex('menu_access').where({ user_level, menu_id });
+    const { user_level, menu_id, menu_modul_id, menu_submodul_id, user_create, access } = req.body;
 
-    if (check.length > 0) {
-        response.ok(res, 'Menu Already exists.')
+    if (access === 'menu') {
+        const check_menu = await knex('menu_access').where({ user_level, menu_id });
+        if (!check_menu) {
+            await knex('menu_access')
+            .insert([{
+                user_level,
+                menu_id,
+                menu_modul_id: 0,
+                menu_submodul_id: 0,
+                user_create,
+                created_at: knex.fn.now()
+            }]);
+            response.ok(res, 'Success Insert Menu.')
+        }
+        else {
+            response.ok(res, 'Menu Already exists.')
+        }
     }
-    else {
-        await knex('menu_access')
+    
+    if (access === 'modul') {
+        const check_modul = await knex('menu_access').where({ user_level, menu_modul_id });
+        if (!check_modul) {
+            await knex('menu_access')
+            .insert([{
+                user_level,
+                menu_id,
+                menu_modul_id,
+                menu_submodul_id: 0,
+                user_create,
+                created_at: knex.fn.now()
+            }]);
+            response.ok(res, 'Success Insert Menu Modul.')
+        }
+        else {
+            response.ok(res, 'Menu Modul Already exists.')
+        }
+    }
+    
+    if (access === 'submodul') {
+        const check_submodul = await knex('menu_access').where({ user_level, menu_submodul_id });
+        if (!check_submodul) {
+            await knex('menu_access')
             .insert([{
                 user_level,
                 menu_id,
@@ -62,7 +98,11 @@ const store_access = async function (req, res) {
                 user_create,
                 created_at: knex.fn.now()
             }]);
-        response.ok(res, 'Success Insert Menu.')
+            response.ok(res, 'Success Insert Menu SubModul.')
+        }
+        else {
+            response.ok(res, 'Menu SubModul Already exists.')
+        }
     }
 }
 
