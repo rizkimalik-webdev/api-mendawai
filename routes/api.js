@@ -18,7 +18,9 @@ module.exports = function (app) {
     app.route('/menu').get(menu.menu);
     app.route('/menu_modul/:menu_id').get(menu.menu_modul);
     app.route('/menu_submodul/:menu_modul_id').get(menu.menu_submodul);
-    app.route('/menu_access/:user_level').get(menu.menu_access);
+    app.route('/menu_access').get(menu.menu_access);
+    app.route('/modul_access').get(menu.modul_access);
+    app.route('/submodul_access').get(menu.submodul_access);
     app.route('/store_access').post(menu.store_access);
     app.route('/delete_access/:id').delete(menu.delete_access);
 

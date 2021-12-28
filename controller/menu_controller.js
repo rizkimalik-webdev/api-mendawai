@@ -34,14 +34,56 @@ const menu_submodul = async function (req, res) {
 
 const menu_access = async function (req, res) {
     if (req.method !== 'GET') return res.status(405).end();
-    const { user_level } = req.params;
-    const res_menu_access = await knex('menu_access').where({ user_level }).orderBy('menu_id', 'ASC');
+    const { user_level } = req.query;
+    const res_menu_access = await knex('menu_access').where({ user_level, access: 'menu' }).orderBy('menu_id', 'ASC');
 
     for (let i = 0; i < res_menu_access.length; i++) {
         const { menu_name } = await knex('menu').select('menu_name').where({ menu_id: res_menu_access[i].menu_id }).first();
         res_menu_access[i].menu_name = menu_name;
     }
+
     response.ok(res, res_menu_access)
+}
+
+const modul_access = async function (req, res) {
+    if (req.method !== 'GET') return res.status(405).end();
+    const { user_level, menu_id } = req.query;
+    const res_modul_access = await knex('menu_access').where({ user_level, menu_id, access: 'modul' }).orderBy('menu_modul_id', 'ASC');
+
+    for (let i = 0; i < res_modul_access.length; i++) {
+        const { menu_name } = await knex('menu').select('menu_name').where({ menu_id: res_modul_access[i].menu_id }).first();
+        res_modul_access[i].menu_name = menu_name;
+
+        if (res_modul_access[i].menu_modul_id) {
+            const { menu_modul_name } = await knex('menu_modul').select('menu_modul_name').where({ menu_modul_id: res_modul_access[i].menu_modul_id }).first();
+            res_modul_access[i].menu_modul_name = menu_modul_name;
+        }
+    }
+
+    response.ok(res, res_modul_access)
+}
+
+const submodul_access = async function (req, res) {
+    if (req.method !== 'GET') return res.status(405).end();
+    const { user_level, modul_id } = req.query;
+    const res_submodul_access = await knex('menu_access').where({ user_level, modul_id, access: 'submodul' }).orderBy('menu_submodul_id', 'ASC');
+
+    for (let i = 0; i < res_submodul_access.length; i++) {
+        const { menu_name } = await knex('menu').select('menu_name').where({ menu_id: res_submodul_access[i].menu_id }).first();
+        res_submodul_access[i].menu_name = menu_name;
+
+        if (res_submodul_access[i].menu_modul_id) {
+            const { menu_modul_name } = await knex('menu_modul').select('menu_modul_name').where({ menu_modul_id: res_submodul_access[i].menu_modul_id }).first();
+            res_submodul_access[i].menu_modul_name = menu_modul_name;
+        }
+
+        if (res_submodul_access[i].menu_submodul_id) {
+            const { menu_submodul_name } = await knex('menu_submodul').select('menu_modul_name').where({ menu_submodul_id: res_submodul_access[i].menu_submodul_id }).first();
+            res_submodul_access[i].menu_submodul_name = menu_submodul_name;
+        }
+    }
+
+    response.ok(res, res_submodul_access)
 }
 
 const store_access = async function (req, res) {
@@ -50,54 +92,57 @@ const store_access = async function (req, res) {
 
     if (access === 'menu') {
         const check_menu = await knex('menu_access').where({ user_level, menu_id });
-        if (!check_menu) {
+        if (check_menu.length == 0) {
             await knex('menu_access')
-            .insert([{
-                user_level,
-                menu_id,
-                menu_modul_id: 0,
-                menu_submodul_id: 0,
-                user_create,
-                created_at: knex.fn.now()
-            }]);
+                .insert([{
+                    access,
+                    user_level,
+                    menu_id,
+                    menu_modul_id: 0,
+                    menu_submodul_id: 0,
+                    user_create,
+                    created_at: knex.fn.now()
+                }]);
             response.ok(res, 'Success Insert Menu.')
         }
         else {
             response.ok(res, 'Menu Already exists.')
         }
     }
-    
+
     if (access === 'modul') {
         const check_modul = await knex('menu_access').where({ user_level, menu_modul_id });
-        if (!check_modul) {
+        if (check_modul.length == 0) {
             await knex('menu_access')
-            .insert([{
-                user_level,
-                menu_id,
-                menu_modul_id,
-                menu_submodul_id: 0,
-                user_create,
-                created_at: knex.fn.now()
-            }]);
+                .insert([{
+                    access,
+                    user_level,
+                    menu_id,
+                    menu_modul_id,
+                    menu_submodul_id: 0,
+                    user_create,
+                    created_at: knex.fn.now()
+                }]);
             response.ok(res, 'Success Insert Menu Modul.')
         }
         else {
             response.ok(res, 'Menu Modul Already exists.')
         }
     }
-    
+
     if (access === 'submodul') {
         const check_submodul = await knex('menu_access').where({ user_level, menu_submodul_id });
-        if (!check_submodul) {
+        if (check_submodul.length == 0) {
             await knex('menu_access')
-            .insert([{
-                user_level,
-                menu_id,
-                menu_modul_id,
-                menu_submodul_id,
-                user_create,
-                created_at: knex.fn.now()
-            }]);
+                .insert([{
+                    access,
+                    user_level,
+                    menu_id,
+                    menu_modul_id,
+                    menu_submodul_id,
+                    user_create,
+                    created_at: knex.fn.now()
+                }]);
             response.ok(res, 'Success Insert Menu SubModul.')
         }
         else {
@@ -119,6 +164,8 @@ module.exports = {
     menu_modul,
     menu_submodul,
     menu_access,
+    modul_access,
+    submodul_access,
     store_access,
     delete_access
 }
