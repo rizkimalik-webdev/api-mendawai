@@ -4,13 +4,6 @@ const date = require('date-and-time');
 const logger = require('../config/logger');
 const response = require('../helper/json_response');
 
-const list_customers = async function (req, res) {
-    const chat = await knex('chats')
-        .select('chat_id', 'user_id', 'customer_id', 'name', 'email', 'flag_to')
-        .groupBy('chat_id', 'user_id', 'customer_id', 'name', 'email', 'flag_to')
-        .where({ flag_to: 'customer' })
-    response.ok(res, chat);
-}
 
 const join_chat = async function (req) {
     try {
@@ -67,7 +60,7 @@ const insert_message_customer = async function (req) {
         } = req;
 
         const { date_assign } = await knex('chats').select('date_assign').where({ email }).first();
-        await knex('chats').where({ email,flag_to: 'customer'}).whereNot({user_id}).update({ user_id });
+        await knex('chats').where({ email, flag_to: 'customer' }).whereNot({ user_id }).update({ user_id });
 
         await knex('chats')
             .insert([{
@@ -139,9 +132,26 @@ const insert_message_agent = async function (req) {
     }
 }
 
+const list_customers = async function (req, res) {
+    const chat = await knex('chats')
+        .select('chat_id', 'user_id', 'customer_id', 'name', 'email', 'flag_to')
+        .groupBy('chat_id', 'user_id', 'customer_id', 'name', 'email', 'flag_to')
+        .where({ flag_to: 'customer' })
+    response.ok(res, chat);
+}
+
+const conversation_chats = async function (req, res) {
+    const { chat_id } = req.body;
+    const chat = await knex('chats')
+        .where({ chat_id, flag_end: 'N' })
+        .orderBy('id', 'asc')
+    response.ok(res, chat);
+}
+
 module.exports = {
     list_customers,
     join_chat,
     insert_message_customer,
     insert_message_agent,
+    conversation_chats,
 }

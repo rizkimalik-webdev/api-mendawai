@@ -4,10 +4,10 @@ const mail = require('../controller/mail_controller');
 const auth = require('../controller/auth_controller');
 const menu = require('../controller/menu_controller');
 const user = require('../controller/users_controller');
-const { facebook, twitter, instagram } = require('../controller/hooks');
-const { list_customers } = require('../controller/sosmed_controller');
-const { blending } = require('../controller/blending_controller');
 const { user_level } = require('../controller/user_level_crontroller');
+const { facebook, twitter, instagram } = require('../controller/hooks');
+const socmed = require('../controller/sosmed_controller');
+const { blending } = require('../controller/blending_controller');
 
 module.exports = function (app) {
     app.route('/').get(function (req, res) {
@@ -33,8 +33,9 @@ module.exports = function (app) {
     app.route('/mail').post(mail.send_mail);
     
     app.prefix('/sosmed', function (api) {
-        api.route('/list_customers').get(list_customers);
         api.route('/blending').post(blending);
+        api.route('/list_customers').get(socmed.list_customers);
+        api.route('/conversation_chats').post(socmed.conversation_chats);
     });
     
     
