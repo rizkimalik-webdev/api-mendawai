@@ -10,7 +10,7 @@ const join_chat = async function (req) {
         const { user_id, username, email } = req;
         const now = new Date();
         const chatid = date.format(now, 'YYYYMMDDHHmmSSSmmSSS');
-        const { customer_id } = await knex('customers').where('email', email).first();
+        const { customer_id } = await knex('customers').where({ email }).first();
         const chat = await knex('chats')
             .select('chat_id')
             .where({
@@ -133,19 +133,29 @@ const insert_message_agent = async function (req) {
 }
 
 const list_customers = async function (req, res) {
-    const chat = await knex('chats')
-        .select('chat_id', 'user_id', 'customer_id', 'name', 'email', 'flag_to')
-        .groupBy('chat_id', 'user_id', 'customer_id', 'name', 'email', 'flag_to')
-        .where({ flag_to: 'customer' })
-    response.ok(res, chat);
+    const res_list_customers = await knex('chats')
+        .select('chat_id', 'user_id', 'customer_id', 'name', 'email', 'flag_to', 'channel', 'page_id', 'post_id', 'comment_id', 'reply_id')
+        .groupBy('chat_id', 'user_id', 'customer_id', 'name', 'email', 'flag_to', 'channel', 'page_id', 'post_id', 'comment_id', 'reply_id')
+        .where({ flag_to: 'customer', flag_end: 'N' })
+
+    for (let i = 0; i < res_list_customers.length; i++) {
+        const { date_create } = await knex('chats').select('date_create').where({ chat_id: res_list_customers[i].chat_id }).orderBy('id', 'desc').first();
+        res_list_customers[i].date_create = date.format(date_create, 'HH:mm DD MMM YYYY');
+    }
+
+    response.ok(res, res_list_customers);
 }
 
 const conversation_chats = async function (req, res) {
     const { chat_id } = req.body;
-    const chat = await knex('chats')
+    const res_conversations = await knex('chats')
         .where({ chat_id, flag_end: 'N' })
         .orderBy('id', 'asc')
-    response.ok(res, chat);
+
+    for (let i = 0; i < res_conversations.length; i++) {
+        res_conversations[i].date_create = date.format(res_conversations[i].date_create, 'YYYY-MM-DD HH:mm:ss')
+    }
+    response.ok(res, res_conversations);
 }
 
 module.exports = {
