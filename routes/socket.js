@@ -34,7 +34,6 @@ module.exports = function (io) {
         });
 
         socket.on('send-message-customer', (content) => {
-            // console.log('message-customer: ' + JSON.stringify(content));
             socket.to(content.socket_agentid).emit('return-message-customer', content);
             insert_message_customer(content);
         });
@@ -46,6 +45,10 @@ module.exports = function (io) {
                 console.log(`${val.email}, join chat: ${val.chat_id}`);
             });
             // socket.join(val.chat_id);
+        });
+        
+        socket.on('blending-chat', (content) => {
+            socket.to(content.socket_id).emit('return-blending-chat', content);
         });
 
 

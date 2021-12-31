@@ -21,6 +21,7 @@ const up = function (knex) {
         table.integer('max_whatsapp', 10);
         table.integer('max_queue', 10);
         table.integer('max_concurrent', 10);
+        table.string('socket_id', 100);
     })
 
 };

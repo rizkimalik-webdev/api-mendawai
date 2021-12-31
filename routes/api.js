@@ -27,6 +27,7 @@ module.exports = function (app) {
     app.prefix('/auth', function (api) {
         api.route('/login').post(auth.login);
         api.route('/logout').post(auth.logout);
+        api.route('/user_socket').put(auth.user_socket);
     });
 
     app.route('/user_level').get(user_level);

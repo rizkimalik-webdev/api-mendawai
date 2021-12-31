@@ -5,7 +5,7 @@ const logger = require('../config/logger');
 const response = require('../helper/json_response');
 
 
-exports.login = async function(req, res) {
+exports.login = async function (req, res) {
     try {
         if (req.method !== 'POST') return res.status(405).end('Method not Allowed');
         const { username, password } = req.body;
@@ -34,7 +34,7 @@ exports.login = async function(req, res) {
         //     maxAge: 86400,
         //     signed: false,
         // });
-        
+
         //?send token
         user.token = token;
         response.ok(res, user);
@@ -46,18 +46,35 @@ exports.login = async function(req, res) {
     }
 }
 
-exports.logout = async function (req, res){
+exports.logout = async function (req, res) {
     try {
         if (req.method !== 'POST') return res.status(405).end('Method not Allowed');
         const { username } = req.body;
-        
+
         //?login update
-        await knex('users').update({login:0}).where({username});
-        response.ok(res, {message:'logout success'});
+        await knex('users').update({ login: 0 }).where({ username });
+        response.ok(res, { message: 'logout success' });
     }
     catch (error) {
         console.log(error);
-        logger('auth/logout',error);
+        logger('auth/logout', error);
+        res.status(500).end();
+    }
+}
+
+exports.user_socket = async function (req, res) {
+    try {
+        if (req.method !== 'PUT') return res.status(405).end('Method not Allowed');
+        const { username, socket_id } = req.body;
+
+        await knex('users')
+            .where({ username })
+            .update({ socket_id });
+        response.ok(res, 'success update socket.');
+    }
+    catch (error) {
+        console.log(error);
+        logger('user/user_socket', error);
         res.status(500).end();
     }
 }
