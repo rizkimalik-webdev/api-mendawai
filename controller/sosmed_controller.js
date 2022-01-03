@@ -139,11 +139,12 @@ const list_customers = async function (req, res) {
         .where({ flag_to: 'customer', flag_end: 'N' })
 
     for (let i = 0; i < res_list_customers.length; i++) {
-        const { date_create } = await knex('chats').select('date_create').where({ chat_id: res_list_customers[i].chat_id }).orderBy('id', 'desc').first();
-        res_list_customers[i].date_create = date.format(date_create, 'HH:mm DD MMM YYYY');
+        const { date_create } = await knex('chats').select('date_create').where({ flag_to: 'customer', flag_end: 'N', chat_id: res_list_customers[i].chat_id }).orderBy('id', 'desc').first();
+        res_list_customers[i].date_create = date_create.toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        // res_list_customers[i].date_create = date.format(date_create, 'hh:mm DD MMM YYYY');
     }
 
-    response.ok(res, res_list_customers);
+    response.ok(res, res_list_customers.reverse());
 }
 
 const conversation_chats = async function (req, res) {
@@ -153,9 +154,20 @@ const conversation_chats = async function (req, res) {
         .orderBy('id', 'asc')
 
     for (let i = 0; i < res_conversations.length; i++) {
-        res_conversations[i].date_create = date.format(res_conversations[i].date_create, 'YYYY-MM-DD HH:mm:ss')
+        res_conversations[i].date_create = res_conversations[i].date_create.toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        // res_conversations[i].date_create = date.format(res_conversations[i].date_create, 'YYYY-MM-DD HH:mm:ss')
     }
     response.ok(res, res_conversations);
+}
+
+const end_chat = async function (req, res) {
+    const { chat_id } = req.body;
+    const res_endchat = await knex.raw(`
+        UPDATE chats SET flag_end='Y' WHERE chat_id=${chat_id}
+		INSERT INTO chats_end SELECT * FROM chats WHERE flag_end='Y'
+		DELETE chats WHERE flag_end='Y'
+    `);
+    response.ok(res, res_endchat);
 }
 
 module.exports = {
@@ -164,4 +176,5 @@ module.exports = {
     insert_message_customer,
     insert_message_agent,
     conversation_chats,
+    end_chat,
 }

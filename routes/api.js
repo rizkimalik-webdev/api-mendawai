@@ -37,6 +37,7 @@ module.exports = function (app) {
         api.route('/blending').post(blending);
         api.route('/list_customers').get(socmed.list_customers);
         api.route('/conversation_chats').post(socmed.conversation_chats);
+        api.route('/end_chat').post(socmed.end_chat);
     });
     
     

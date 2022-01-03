@@ -1,10 +1,10 @@
 
 const up = function(knex) {
     return knex.schema.createTable('chats_end', function(table){
-        table.increments('id').primary();
-        table.string('chat_id', 50).notNullable();
-        table.string('user_id', 50).notNullable();
-        table.string('customer_id', 50).notNullable();
+        table.integer('id');
+        table.string('chat_id', 50);
+        table.string('user_id', 50);
+        table.string('customer_id', 50);
         table.string('name', 100);
         table.string('email', 100);
         table.string('flag_to', 50);

@@ -35,26 +35,33 @@ module.exports = function (io) {
 
         socket.on('send-message-customer', (content) => {
             socket.to(content.socket_agentid).emit('return-message-customer', content);
+            if(content.blending === true) return;
             insert_message_customer(content);
         });
 
 
         socket.on('join-chat', (content) => {
-            join_chat(content).then((val) => {
-                socket.to(val.user_id).emit('return-join-chat', val);
-                console.log(`${val.email}, join chat: ${val.chat_id}`);
-            });
-            // socket.join(val.chat_id);
+            if (content.flag_to === 'customer') {
+                join_chat(content).then((val) => {
+                    // socket.join(val.chat_id);
+                    socket.to(val.user_id).emit('return-join-chat', val);
+                    console.log(`🚀 ${val.email}, join chat: ${val.chat_id}`);
+                });
+            }
+            else {
+                socket.join(content.chat_id);
+                console.log(`${content.email}, join chat: ${content.chat_id}`);
+            }
         });
         
         socket.on('blending-chat', (content) => {
-            socket.to(content.socket_id).emit('return-blending-chat', content);
+            socket.to(content.user_id).emit('return-blending-chat', content);
         });
 
 
         socket.on('disconnect', (res) => {
             delete users[socket.id];
-            console.log(`${socket.id} - ${res}`);
+            console.log(`📴 ${socket.id} - ${res} ⛔`);
         });
     });
 
