@@ -44,13 +44,13 @@ exports.seed = function (knex) {
                     icon: 'ticket',
                     is_root: true
                 },
-                // {
-                //     menu_name: "Management User",
-                //     number: 0,
-                //     path: '/users',
-                //     icon: 'user',
-                //     is_root: false
-                // },
+                {
+                    menu_name: "Report",
+                    number: 0,
+                    path: null,
+                    icon: 'chart-bar',
+                    is_root: true
+                },
                 {
                     menu_name: "Settings",
                     number: 0,

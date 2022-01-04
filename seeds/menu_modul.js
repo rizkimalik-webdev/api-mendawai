@@ -97,23 +97,40 @@ exports.seed = function (knex) {
                     is_root: false
                 },
                 
-                /* modul setting */
+                /* modul Report */
                 { 
                     menu_id: 7,
+                    menu_modul_name: "Report Ticket",
+                    number: 0,
+                    path: '/report_default',
+                    icon: null,
+                    is_root: false
+                },{ 
+                    menu_id: 7,
+                    menu_modul_name: "Report Email",
+                    number: 0,
+                    path: '/report_email',
+                    icon: null,
+                    is_root: false
+                },
+                
+                /* modul setting */
+                { 
+                    menu_id: 8,
                     menu_modul_name: "User Management",
                     number: 0,
                     path: '/user',
                     icon: null,
                     is_root: false
                 },{ 
-                    menu_id: 7,
+                    menu_id: 8,
                     menu_modul_name: "User Privillage",
                     number: 0,
                     path: '/user_privillage',
                     icon: null,
                     is_root: false
                 },{ 
-                    menu_id: 7,
+                    menu_id: 8,
                     menu_modul_name: "Subcription",
                     number: 0,
                     path: '/subcription',

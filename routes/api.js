@@ -4,6 +4,7 @@ const mail = require('../controller/mail_controller');
 const auth = require('../controller/auth_controller');
 const menu = require('../controller/menu_controller');
 const user = require('../controller/users_controller');
+const customer = require('../controller/customer_controller');
 const { user_level } = require('../controller/user_level_crontroller');
 const { facebook, twitter, instagram } = require('../controller/hooks');
 const socmed = require('../controller/sosmed_controller');
@@ -40,7 +41,13 @@ module.exports = function (app) {
         api.route('/end_chat').post(socmed.end_chat);
     });
     
-    
+    app.prefix('/customer',  function (api) {
+        api.route('/').get(customer.index);
+        api.route('/show/:id').get(customer.show);
+        api.route('/store').post(customer.store);
+        api.route('/update').put(customer.update);
+        api.route('/delete/:id').delete(customer.destroy);
+    });
 
     app.prefix('/user',  function (api) {
         api.route('/').get(user.index);
