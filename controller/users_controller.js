@@ -66,13 +66,13 @@ const store = async function (req, res) {
             max_instagram,
             max_whatsapp,
             max_queue,
-            max_concurrent,
+            max_concurrent
         } = req.body;
 
         const salt = bcrypt.genSaltSync(10)
         const passwordHash = bcrypt.hashSync(password, salt)
 
-        const getId = await knex('users')
+        await knex('users')
             .insert([{
                 name,
                 username,
@@ -81,7 +81,7 @@ const store = async function (req, res) {
                 user_level,
                 login: 0,
                 aux: 0,
-                organization:1,
+                organization: 1,
                 inbound,
                 outbound,
                 sms,
@@ -121,15 +121,66 @@ const update = async function (req, res) {
         if (req.method !== 'PUT') return res.status(405).end('Method not Allowed');
         auth_jwt_bearer(req, res);
 
-        const { id, name, username, email_address, password, user_level, max_concurrent } = req.body;
-        // const salt = bcrypt.genSaltSync(10)
-        // const passwordHash = bcrypt.hashSync(password, salt)
+        const {
+            id,
+            name,
+            username,
+            email_address,
+            user_level,
+            // organization,
+            inbound,
+            outbound,
+            sms,
+            email,
+            chat,
+            facebook,
+            twitter,
+            instagram,
+            whatsapp,
+            max_inbound,
+            max_outbound,
+            max_sms,
+            max_email,
+            max_chat,
+            max_facebook,
+            max_twitter,
+            max_instagram,
+            max_whatsapp,
+            max_queue,
+            max_concurrent
+        } = req.body;
 
-        const getId = await knex('users')
+        await knex('users')
             .where({ id })
-            .update({ name, username, email_address, /* password: passwordHash, */ user_level, max_concurrent })
-
-        const getData = await knex('users').where({ id: id }).first();
+            .update({
+                name,
+                username,
+                email_address,
+                user_level,
+                // organization: 1,
+                inbound,
+                outbound,
+                sms,
+                email,
+                chat,
+                facebook,
+                twitter,
+                instagram,
+                whatsapp,
+                max_inbound,
+                max_outbound,
+                max_sms,
+                max_email,
+                max_chat,
+                max_facebook,
+                max_twitter,
+                max_instagram,
+                max_whatsapp,
+                max_queue,
+                max_concurrent,
+                updated_at: knex.fn.now()
+            });
+        const getData = await knex('users').where({ id }).first();
         response.ok(res, getData);
     }
     catch (error) {

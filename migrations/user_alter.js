@@ -49,6 +49,7 @@ const down = function (knex) {
         table.dropColumn('max_whatsapp');
         table.dropColumn('max_queue');
         table.dropColumn('max_concurrent');
+        table.dropColumn('socket_id');
     })
 
 };

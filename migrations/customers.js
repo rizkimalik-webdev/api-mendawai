@@ -7,7 +7,7 @@ const up = function(knex) {
         table.string('name', 100);
         table.string('email', 100).unique();
         table.string('no_ktp', 50);
-        table.timestamp('birth');
+        table.date('birth');
         table.string('gender', 50);
         table.string('hp', 50).unique();
         table.string('telephone', 50).unique();

@@ -43,5 +43,5 @@ const socket = require('./routes/socket');
 socket(io);
 
 server.listen(port, () => {
-    console.log(`Server app listening at port : http://localhost:${port}`)
+    console.log(`✨Server app listening at port : 🚀 http://localhost:${port}`)
 })

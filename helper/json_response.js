@@ -8,4 +8,24 @@ const ok = function (res, data) {
     res.end();
 }
 
-module.exports = {ok};
+const created = function (res, data) {
+    let values = {
+        'status': 201,
+        'message': 'created',
+        'data': data
+    }
+    res.json(values);
+    res.end();
+}
+
+const error = function (res, data) {
+    let values = {
+        'status': 400,
+        'message': 'error',
+        'data': data
+    }
+    res.json(values);
+    res.end();
+}
+
+module.exports = { ok, created, error };

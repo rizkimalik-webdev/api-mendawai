@@ -43,10 +43,10 @@ module.exports = function (app) {
     
     app.prefix('/customer',  function (api) {
         api.route('/').get(customer.index);
-        api.route('/show/:id').get(customer.show);
+        api.route('/show/:customer_id').get(customer.show);
         api.route('/store').post(customer.store);
         api.route('/update').put(customer.update);
-        api.route('/delete/:id').delete(customer.destroy);
+        api.route('/delete/:customer_id').delete(customer.destroy);
     });
 
     app.prefix('/user',  function (api) {
