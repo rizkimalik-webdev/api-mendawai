@@ -4,6 +4,7 @@ const date = require('date-and-time');
 const { auth_jwt_bearer } = require('../middleware');
 const logger = require('../config/logger');
 const response = require('../helper/json_response');
+const { insert_channel_customer } = require('./customer_channel_controller');
 
 
 const index = async function (req, res) {
@@ -65,7 +66,6 @@ const store = async function (req, res) {
             await knex('customers')
                 .insert([{
                     customer_id,
-                    tittle,
                     name,
                     email,
                     no_ktp,
@@ -73,12 +73,11 @@ const store = async function (req, res) {
                     gender,
                     telephone,
                     address,
-                    city,
-                    region,
                     status: 'Registered',
                     source: 'ICC',
                     created_at: knex.fn.now()
                 }]);
+            insert_channel_customer({ customer_id, email, telephone });
             const getcustomer = await knex('customers').where({ email }).first();
             response.ok(res, getcustomer);
         }
@@ -121,6 +120,7 @@ const update = async function (req, res) {
                 updated_at: knex.fn.now()
             })
             .where({ customer_id });
+        insert_channel_customer({ customer_id, email, telephone });
         const getData = await knex('customers').where({ customer_id }).first();
         response.ok(res, getData);
     }

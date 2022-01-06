@@ -5,9 +5,10 @@ const auth = require('../controller/auth_controller');
 const menu = require('../controller/menu_controller');
 const user = require('../controller/users_controller');
 const customer = require('../controller/customer_controller');
+const channel = require('../controller/customer_channel_controller');
+const socmed = require('../controller/sosmed_controller');
 const { user_level } = require('../controller/user_level_crontroller');
 const { facebook, twitter, instagram } = require('../controller/hooks');
-const socmed = require('../controller/sosmed_controller');
 const { blending } = require('../controller/blending_controller');
 
 module.exports = function (app) {
@@ -47,6 +48,7 @@ module.exports = function (app) {
         api.route('/store').post(customer.store);
         api.route('/update').put(customer.update);
         api.route('/delete/:customer_id').delete(customer.destroy);
+        api.route('/channel').get(channel.index);
     });
 
     app.prefix('/user',  function (api) {

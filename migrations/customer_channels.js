@@ -2,7 +2,7 @@
 const up = function(knex) {
     return knex.schema.createTable('customer_channels', function(table){
         table.increments('id').primary();
-        table.string('customer_id', 100).unique().notNullable();
+        table.string('customer_id', 100);
         table.string('flag_channel', 50);
         table.string('value_channel');
         table.string('user_create', 100);
