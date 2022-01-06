@@ -53,8 +53,7 @@ const store = async function (req, res) {
             telephone,
             address,
             city,
-            region,
-            status
+            region
         } = req.body;
 
         const check_email = await knex('customers').where({ email });
@@ -76,7 +75,7 @@ const store = async function (req, res) {
                     address,
                     city,
                     region,
-                    status,
+                    status: 'Registered',
                     source: 'ICC',
                     created_at: knex.fn.now()
                 }]);
@@ -109,12 +108,8 @@ const update = async function (req, res) {
             city,
             region
         } = req.body;
-
         await knex('customers')
-            .where({ customer_id })
             .update({
-                customer_id,
-                tittle,
                 name,
                 email,
                 no_ktp,
@@ -122,10 +117,10 @@ const update = async function (req, res) {
                 gender,
                 telephone,
                 address,
-                city,
-                region,
+                status: 'Registered',
                 updated_at: knex.fn.now()
-            });
+            })
+            .where({ customer_id });
         const getData = await knex('customers').where({ customer_id }).first();
         response.ok(res, getData);
     }
@@ -166,6 +161,7 @@ const insert_customer_sosmed = async function (req) {
                     name: name,
                     email: email,
                     source: 'chat',
+                    status: 'Initialize',
                     created_at: knex.fn.now()
                 }]);
         }
