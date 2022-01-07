@@ -7,6 +7,7 @@ const user = require('../controller/users_controller');
 const customer = require('../controller/customer_controller');
 const channel = require('../controller/customer_channel_controller');
 const socmed = require('../controller/sosmed_controller');
+const ticket = require('../controller/ticket_controller');
 const { user_level } = require('../controller/user_level_crontroller');
 const { facebook, twitter, instagram } = require('../controller/hooks');
 const { blending } = require('../controller/blending_controller');
@@ -58,6 +59,13 @@ module.exports = function (app) {
         api.route('/update').put(user.update);
         api.route('/reset_password').put(user.reset_password);
         api.route('/delete/:id').delete(user.destroy);
+    });
+    
+    app.prefix('/ticket',  function (api) {
+        api.route('/').get(ticket.index);
+        // api.route('/show/:id').get(user.show);
+        api.route('/store').post(ticket.store);
+        // api.route('/update').put(user.update);
     });
 
     app.prefix('/hooks', function (api) {

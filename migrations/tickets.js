@@ -2,22 +2,26 @@
 const up = function(knex) {
     return knex.schema.createTable('tickets', function(table){
         table.increments('id').primary();
-        table.string('customer_id', 100).unique().notNullable();
-        table.bigInteger('ticket_number', 100).notNullable();
-        table.string('group_ticket_number', 100);
-        table.string('ticket_source', 100).notNullable();
+        table.string('customer_id', 50).unique().notNullable();
+        table.string('ticket_number', 50).notNullable();
+        table.string('group_ticket_number', 50);
+        table.string('ticket_source', 50).notNullable();
         table.string('status', 50).notNullable();
-        table.text('detail_complaint');
-        table.text('response_complaint');
-        table.integer('SLA');
+        table.string('category_id', 20);
+        table.string('category_sublv1_id', 20);
+        table.string('category_sublv2_id', 20);
+        table.string('category_sublv3_id', 20);
+        table.text('complaint_detail');
+        table.text('response_detail');
+        table.integer('sla');
         table.string('ticket_position', 5);
-        table.string('closed_by', 5);
-        table.string('send_email', 5);
-        table.string('send_email_layer', 5);
-        table.integer('divisi', 10);
-        table.string('user_create', 100);
-        table.string('user_update', 100);
-        table.timestamps();
+        table.integer('org_id', 5);
+        table.string('user_create', 50);
+        table.timestamp('date_create');
+        table.string('user_solved', 50);
+        table.timestamp('date_solved');
+        table.string('user_closed', 50);
+        table.timestamp('date_closed');
     })
 };
 

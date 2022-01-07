@@ -43,7 +43,7 @@ const store = async function (req, res) {
         auth_jwt_bearer(req, res);
 
         const now = new Date();
-        const customer_id = date.format(now, 'YYYYMMDDHHmmSSS');
+        const customer_id = date.format(now, 'YYMMDDHHmmSS');
         const {
             tittle,
             name,
@@ -151,7 +151,7 @@ const insert_customer_sosmed = async function (req) {
     try {
         const { name, email } = req;
         const now = new Date();
-        const customerid = date.format(now, 'YYYYMMDDHHmmSSS');
+        const customer_id = date.format(now, 'YYMMDDHHmmSS');
         const check_data = await knex('customers').where('email', email);
 
         if (check_data.length === 0) {
