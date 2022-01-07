@@ -1,7 +1,7 @@
 'use strict';
 const knex = require('../config/db_connect');
 const date = require('date-and-time');
-const logger = require('../config/logger');
+const logger = require('../helper/logger');
 const response = require('../helper/json_response');
 
 

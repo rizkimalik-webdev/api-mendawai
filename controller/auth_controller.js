@@ -1,7 +1,7 @@
 const knex = require('../config/db_connect');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const logger = require('../config/logger');
+const logger = require('../helper/logger');
 const response = require('../helper/json_response');
 
 

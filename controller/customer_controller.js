@@ -2,7 +2,7 @@
 const knex = require('../config/db_connect');
 const date = require('date-and-time');
 const { auth_jwt_bearer } = require('../middleware');
-const logger = require('../config/logger');
+const logger = require('../helper/logger');
 const response = require('../helper/json_response');
 const { insert_channel_customer } = require('./customer_channel_controller');
 
