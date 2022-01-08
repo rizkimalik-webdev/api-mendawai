@@ -38,7 +38,7 @@ const store = async function (req, res) {
             category_sublv3_id,
             complaint_detail,
             response_detail,
-            sla = 5,
+            sla,
             ticket_position,
             org_id,
             user_create,
