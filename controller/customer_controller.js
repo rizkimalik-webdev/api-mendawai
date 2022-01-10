@@ -107,7 +107,13 @@ const update = async function (req, res) {
             city,
             region
         } = req.body;
-        await knex('customers')
+        const check_email = await knex('customers').where({ email }).whereNot({ customer_id});
+        if (check_email.length > 0) return response.created(res, `email : ${email} - already exists.`);
+        const check_phone = await knex('customers').where({ telephone }).whereNot({ customer_id});
+        if (check_phone.length > 0) return response.created(res, `telephone : ${telephone} - already exists.`);
+
+        if (check_email.length === 0 && check_phone.length === 0) {
+            await knex('customers')
             .update({
                 name,
                 email,
@@ -120,9 +126,10 @@ const update = async function (req, res) {
                 updated_at: knex.fn.now()
             })
             .where({ customer_id });
-        insert_channel_customer({ customer_id, email, telephone });
-        const getData = await knex('customers').where({ customer_id }).first();
-        response.ok(res, getData);
+            insert_channel_customer({ customer_id, email, telephone });
+            const getData = await knex('customers').where({ customer_id }).first();
+            response.ok(res, getData);
+        }
     }
     catch (error) {
         console.log(error);
