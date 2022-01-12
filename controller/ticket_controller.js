@@ -42,7 +42,7 @@ const store = async function (req, res) {
             ticket_position,
             org_id,
             user_create,
-            date_create = knex.fn.now()
+            date_create
         } = req.body;
 
 
@@ -53,15 +53,15 @@ const store = async function (req, res) {
                 // group_ticket_number,
                 ticket_source,
                 status,
-                category_id,
-                category_sublv1_id,
-                category_sublv2_id,
-                category_sublv3_id,
-                complaint_detail,
-                response_detail,
-                sla,
-                ticket_position,
-                org_id,
+                // category_id,
+                // category_sublv1_id,
+                // category_sublv2_id,
+                // category_sublv3_id,
+                // complaint_detail,
+                // response_detail,
+                // sla,
+                // ticket_position,
+                // org_id,
                 user_create,
                 date_create
             }]);

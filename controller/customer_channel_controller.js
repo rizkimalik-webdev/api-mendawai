@@ -9,7 +9,9 @@ const index = async function (req, res) {
     try {
         if (req.method !== 'GET') return res.status(405).end();
         auth_jwt_bearer(req, res);
-        const channels = await knex('customer_channels').select('id','customer_id', 'flag_channel', 'value_channel');
+        const channels = await knex('customer_channels')
+            .select('id','customer_id', 'flag_channel', 'value_channel')
+            .orderBy('customer_id');
         for (let i = 0; i < channels.length; i++) {
             const { name } = await knex('customers').select('name')
                 .where({ customer_id: channels[i].customer_id })

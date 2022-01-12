@@ -11,6 +11,7 @@ const ticket = require('../controller/ticket_controller');
 const { user_level } = require('../controller/user_level_crontroller');
 const { facebook, twitter, instagram } = require('../controller/hooks');
 const { blending } = require('../controller/blending_controller');
+const master = require('../controller/master_data');
 
 module.exports = function (app) {
     app.route('/').get(function (req, res) {
@@ -35,6 +36,10 @@ module.exports = function (app) {
 
     app.route('/user_level').get(user_level);
     app.route('/mail').post(mail.send_mail);
+
+    app.prefix('/master', function (api) {
+        api.route('/channel').get(master.channel.index);
+    });
     
     app.prefix('/sosmed', function (api) {
         api.route('/blending').post(blending);

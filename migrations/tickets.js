@@ -2,7 +2,7 @@
 const up = function(knex) {
     return knex.schema.createTable('tickets', function(table){
         table.increments('id').primary();
-        table.string('customer_id', 50).unique().notNullable();
+        table.string('customer_id', 50).notNullable();
         table.string('ticket_number', 50).notNullable();
         table.string('group_ticket_number', 50);
         table.string('ticket_source', 50).notNullable();
