@@ -55,13 +55,13 @@ const store = async function (req, res) {
                 // group_ticket_number,
                 ticket_source,
                 status,
-                // category_id,
-                // category_sublv1_id,
-                // category_sublv2_id,
-                // category_sublv3_id,
+                category_id,
+                category_sublv1_id,
+                category_sublv2_id,
+                category_sublv3_id,
                 complaint_detail,
                 response_detail,
-                // sla,
+                sla,
                 ticket_position: 1,
                 // org_id,
                 user_create,
@@ -83,7 +83,7 @@ const history_transaction = async function (req, res) {
         auth_jwt_bearer(req, res);
         const { customer_id } = req.params;
         const tickets = await knex('tickets')
-            .select('ticket_number', 'ticket_source', 'status', 'category_id', 'date_create')
+            .select('ticket_number', 'ticket_source', 'status', 'category_id', 'category_sublv1_id', 'category_sublv2_id', 'category_sublv3_id', 'date_create', 'complaint_detail', 'response_detail')
             .where({ customer_id }).orderBy('id', 'desc');
 
         for (let i = 0; i < tickets.length; i++) {
