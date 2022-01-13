@@ -3,6 +3,7 @@ const up = function(knex) {
     return knex.schema.createTable('channels', function(table){
         table.increments('id').primary();
         table.string('channel', 50);
+        table.string('icon', 50);
     })
 };
 

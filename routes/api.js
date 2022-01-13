@@ -38,6 +38,7 @@ module.exports = function (app) {
     app.route('/mail').post(mail.send_mail);
 
     app.prefix('/master', function (api) {
+        api.route('/status').get(master.status.index);
         api.route('/channel').get(master.channel.index);
     });
     
@@ -68,8 +69,8 @@ module.exports = function (app) {
     
     app.prefix('/ticket',  function (api) {
         api.route('/').get(ticket.index);
-        // api.route('/show/:id').get(user.show);
         api.route('/store').post(ticket.store);
+        api.route('/history_transaction/:customer_id').get(ticket.history_transaction);
         // api.route('/update').put(user.update);
     });
 

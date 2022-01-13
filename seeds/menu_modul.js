@@ -85,14 +85,14 @@ exports.seed = function (knex) {
                     menu_id: 6,
                     menu_modul_name: "Create Ticket",
                     number: 0,
-                    path: '/ticket_create',
+                    path: '/ticket',
                     icon: null,
                     is_root: false
                 },{ 
                     menu_id: 6,
                     menu_modul_name: "History Ticket",
                     number: 0,
-                    path: '/ticket_history',
+                    path: '/ticket/history',
                     icon: null,
                     is_root: false
                 },
@@ -126,7 +126,7 @@ exports.seed = function (knex) {
                     menu_id: 8,
                     menu_modul_name: "User Privillage",
                     number: 0,
-                    path: '/user_privillage',
+                    path: '/user/privillage',
                     icon: null,
                     is_root: false
                 },{ 
