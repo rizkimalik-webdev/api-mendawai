@@ -4,8 +4,7 @@ const bodyParser = require('body-parser');
 // const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
-//const port = process.env.APP_PORT || 3001;
-const port = 3001;
+const port = process.env.APP_PORT || 3001;
 
 dotenv.config();
 express.application.prefix = express.Router.prefix = function (path, configure) {
