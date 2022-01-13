@@ -1,4 +1,4 @@
-/* const up = function (knex, Promise) {
+const up = function (knex, Promise) {
     // return knex.schema.createTable('tasks', function (table) {
     //     table.increments();
     //     table.string('title').notNullable();
@@ -14,4 +14,4 @@ const down = function (knex, Promise) {
     // return knex.schema.dropTable('tasks');
 }
 
-module.exports = {up, down} */
+module.exports = {up, down}
