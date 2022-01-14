@@ -39,7 +39,7 @@ const show = async function (req, res) {
 const store = async function (req, res) {
     try {
         if (req.method !== 'POST') return res.status(405).end('Method not Allowed');
-        // auth_jwt_bearer(req, res);
+        auth_jwt_bearer(req, res);
         const {
             name,
             username,
@@ -81,7 +81,7 @@ const store = async function (req, res) {
                 user_level,
                 login: 0,
                 aux: 0,
-                organization: 1,
+                organization,
                 inbound,
                 outbound,
                 sms,
