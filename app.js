@@ -18,7 +18,7 @@ const app = express();
 const server = http.createServer(app);
 const io = require('socket.io')(server, {
     cors: {
-        origin: ['http://localhost:3000','http://localhost:5000', 'https://main.d9bnubwqkpgf8.amplifyapp.com/'],
+        origin: ['http://localhost:3000','http://localhost:5000', 'https://main.d9bnubwqkpgf8.amplifyapp.com/', 'https://app-mendawai.netlify.app/'],
         methods: ["GET", "POST", "PUT", "DELETE"]
     }
 });
