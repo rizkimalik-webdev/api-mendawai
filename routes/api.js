@@ -8,7 +8,6 @@ const customer = require('../controller/customer_controller');
 const channel = require('../controller/customer_channel_controller');
 const socmed = require('../controller/sosmed_controller');
 const ticket = require('../controller/ticket_controller');
-const { user_level } = require('../controller/user_level_crontroller');
 const { facebook, twitter, instagram } = require('../controller/hooks');
 const { blending } = require('../controller/blending_controller');
 const master = require('../controller/master_data');
@@ -34,12 +33,12 @@ module.exports = function (app) {
         api.route('/user_socket').put(auth.user_socket);
     });
 
-    app.route('/user_level').get(user_level);
     app.route('/mail').post(mail.send_mail);
 
     app.prefix('/master', function (api) {
         api.route('/status').get(master.status.index);
         api.route('/channel').get(master.channel.index);
+        api.route('/user_level').get(master.user_level.index);
     });
     
     app.prefix('/sosmed', function (api) {
