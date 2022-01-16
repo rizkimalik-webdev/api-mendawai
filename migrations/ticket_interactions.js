@@ -1,6 +1,6 @@
 
 const up = function(knex) {
-    return knex.schema.createTable('interactions', function(table){
+    return knex.schema.createTable('ticket_interactions', function(table){
         table.increments('id').primary();
         table.string('ticket_number').notNullable();
         table.string('genesys_id', 50);
@@ -20,7 +20,7 @@ const up = function(knex) {
 };
 
 const down = function(knex) {
-    return knex.schema.dropTable('interactions');
+    return knex.schema.dropTable('ticket_interactions');
 };
 
 module.exports = {up, down}

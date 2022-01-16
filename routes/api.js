@@ -14,7 +14,7 @@ const master = require('../controller/master_data');
 
 module.exports = function (app) {
     app.route('/').get(function (req, res) {
-        res.json({ message: "Application Mendawai API running! 🤘" });
+        res.json({ message: "Application Mendawai API running! 🤘🚀" });
         res.end();
     });
     app.route('/main_menu').get(menu.main_menu);
@@ -41,11 +41,34 @@ module.exports = function (app) {
         api.route('/user_level').get(master.user_level.index);
     });
     
-    app.prefix('/sosmed', function (api) {
-        api.route('/blending').post(blending);
-        api.route('/list_customers').get(socmed.list_customers);
-        api.route('/conversation_chats').post(socmed.conversation_chats);
-        api.route('/end_chat').post(socmed.end_chat);
+    //? route category options
+    app.prefix('/category', function (api) {
+        api.route('/').get(master.category.index);
+        api.route('/show/:category_id').get(master.category.show);
+        api.route('/store').post(master.category.store);
+        api.route('/update').put(master.category.update);
+        api.route('/delete/:category_id').delete(master.category.destroy);
+    });
+    app.prefix('/categorysublv1', function (api) {
+        api.route('/').get(master.categorysublv1.index);
+        api.route('/show/:category_sublv1_id').get(master.categorysublv1.show);
+        api.route('/store').post(master.categorysublv1.store);
+        api.route('/update').put(master.categorysublv1.update);
+        api.route('/delete/:category_sublv1_id').delete(master.categorysublv1.destroy);
+    });
+    app.prefix('/categorysublv2', function (api) {
+        api.route('/').get(master.categorysublv2.index);
+        api.route('/show/:category_sublv2_id').get(master.categorysublv2.show);
+        api.route('/store').post(master.categorysublv2.store);
+        api.route('/update').put(master.categorysublv2.update);
+        api.route('/delete/:category_sublv2_id').delete(master.categorysublv2.destroy);
+    });
+    app.prefix('/categorysublv3', function (api) {
+        api.route('/').get(master.categorysublv3.index);
+        api.route('/show/:category_sublv3_id').get(master.categorysublv3.show);
+        api.route('/store').post(master.categorysublv3.store);
+        api.route('/update').put(master.categorysublv3.update);
+        api.route('/delete/:category_sublv3_id').delete(master.categorysublv3.destroy);
     });
     
     app.prefix('/customer',  function (api) {
@@ -71,6 +94,13 @@ module.exports = function (app) {
         api.route('/store').post(ticket.store);
         api.route('/history_transaction/:customer_id').get(ticket.history_transaction);
         // api.route('/update').put(user.update);
+    });
+
+    app.prefix('/sosmed', function (api) {
+        api.route('/blending').post(blending);
+        api.route('/list_customers').get(socmed.list_customers);
+        api.route('/conversation_chats').post(socmed.conversation_chats);
+        api.route('/end_chat').post(socmed.end_chat);
     });
 
     app.prefix('/hooks', function (api) {

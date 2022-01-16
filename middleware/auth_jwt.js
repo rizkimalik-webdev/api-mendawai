@@ -14,7 +14,7 @@ const auth_jwt_bearer = async function (req, res, next) {
 
         if (authType !== 'Bearer') return res.status(401).end();
 
-        return jwt.verify(authToken, process.env.JWT_SECRET, function (err, decode) {
+        return jwt.verify(authToken, process.env.APP_KEY, function (err, decode) {
             if (err) return res.status(401).end();
 
             return resolve(decode);
@@ -27,7 +27,7 @@ const auth_jwt = function (req, res, next) {
     if (!token) return res.status(403).json({ message: 'empty token!' });
     
     try {
-        const auth = jwt.verify(token, process.env.JWT_SECRET);
+        const auth = jwt.verify(token, process.env.APP_KEY);
         // req.auth = auth;
         return next();
     } 
