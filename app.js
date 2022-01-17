@@ -21,6 +21,7 @@ const io = require('socket.io')(server, {
         origin: '*',
     }
 });
+
 // const io = require('socket.io')(server, {
 //     cors: {
 //         origin: [
