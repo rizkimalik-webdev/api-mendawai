@@ -4,7 +4,8 @@ const { response, logger } = require('../../helper');
 const index = async function (req, res) {
     try {
         if (req.method !== 'GET') return res.status(405).end();
-        const category = await knex('category_sub_lv3');
+        const { category_sublv2_id } = req.params;
+        const category = await knex('category_sub_lv3').where({ category_sublv2_id });
         response.ok(res, category);
     }
     catch (error) {
@@ -37,7 +38,8 @@ const store = async function (req, res) {
             category_sublv2_id,
             sub_name,
             description,
-            sla
+            sla,
+            org_id
         } = req.body;
         const subcategory3 = await knex('category_sub_lv3')
             .select('category_sublv3_id')
@@ -60,7 +62,8 @@ const store = async function (req, res) {
                 category_sublv3_id: categorysublv3_id,
                 sub_name,
                 description,
-                sla
+                sla,
+                org_id
             }]);
         response.ok(res, categorysublv3_id);
     }
@@ -81,7 +84,8 @@ const update = async function (req, res) {
             category_sublv3_id,
             sub_name,
             description,
-            sla
+            sla,
+            org_id
         } = req.body;
 
         await knex('category_sub_lv3')
@@ -91,7 +95,8 @@ const update = async function (req, res) {
                 category_sublv2_id,
                 sub_name,
                 description,
-                sla
+                sla,
+                org_id
             })
             .where({ category_sublv3_id });
         response.ok(res, 'success update');

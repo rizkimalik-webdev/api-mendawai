@@ -50,21 +50,21 @@ module.exports = function (app) {
         api.route('/delete/:category_id').delete(master.category.destroy);
     });
     app.prefix('/categorysublv1', function (api) {
-        api.route('/').get(master.categorysublv1.index);
+        api.route('/:category_id').get(master.categorysublv1.index);
         api.route('/show/:category_sublv1_id').get(master.categorysublv1.show);
         api.route('/store').post(master.categorysublv1.store);
         api.route('/update').put(master.categorysublv1.update);
         api.route('/delete/:category_sublv1_id').delete(master.categorysublv1.destroy);
     });
     app.prefix('/categorysublv2', function (api) {
-        api.route('/').get(master.categorysublv2.index);
+        api.route('/:category_sublv1_id').get(master.categorysublv2.index);
         api.route('/show/:category_sublv2_id').get(master.categorysublv2.show);
         api.route('/store').post(master.categorysublv2.store);
         api.route('/update').put(master.categorysublv2.update);
         api.route('/delete/:category_sublv2_id').delete(master.categorysublv2.destroy);
     });
     app.prefix('/categorysublv3', function (api) {
-        api.route('/').get(master.categorysublv3.index);
+        api.route('/:category_sublv2_id').get(master.categorysublv3.index);
         api.route('/show/:category_sublv3_id').get(master.categorysublv3.show);
         api.route('/store').post(master.categorysublv3.store);
         api.route('/update').put(master.categorysublv3.update);

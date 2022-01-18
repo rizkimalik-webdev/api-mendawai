@@ -4,7 +4,8 @@ const { response, logger } = require('../../helper');
 const index = async function (req, res) {
     try {
         if (req.method !== 'GET') return res.status(405).end();
-        const category = await knex('category_sub_lv1').select('category_id', 'category_sublv1_id', 'sub_name', 'description');
+        const { category_id } = req.params;
+        const category = await knex('category_sub_lv1').where({ category_id }).select('category_id', 'category_sublv1_id', 'sub_name', 'description');
         response.ok(res, category);
     }
     catch (error) {

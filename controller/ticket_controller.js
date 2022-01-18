@@ -63,7 +63,7 @@ const store = async function (req, res) {
                 response_detail,
                 sla,
                 ticket_position: 1,
-                // org_id,
+                org_id,
                 user_create,
                 date_create
             }]);
