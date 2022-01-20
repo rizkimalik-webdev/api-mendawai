@@ -92,8 +92,9 @@ module.exports = function (app) {
     app.prefix('/ticket',  function (api) {
         api.route('/').get(ticket.index);
         api.route('/store').post(ticket.store);
+        api.route('/publish').post(ticket.publish);
+        api.route('/data_publish/:customer_id').get(ticket.data_publish);
         api.route('/history_transaction/:customer_id').get(ticket.history_transaction);
-        // api.route('/update').put(user.update);
     });
 
     app.prefix('/sosmed', function (api) {

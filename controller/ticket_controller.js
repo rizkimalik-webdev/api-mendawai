@@ -32,7 +32,7 @@ const store = async function (req, res) {
         const {
             customer_id,
             ticket_number = date.format(now, 'YYYYMMDDHHmmSSS'),
-            group_ticket_number,
+            // group_ticket_number,
             ticket_source,
             status,
             category_id,
@@ -47,6 +47,11 @@ const store = async function (req, res) {
             date_create
         } = req.body;
 
+        let user_closed, date_closed;
+        if (status === 'Closed') {
+            user_closed = user_create,
+                date_closed = date_create
+        }
 
         await knex('tickets')
             .insert([{
@@ -65,14 +70,50 @@ const store = async function (req, res) {
                 ticket_position: 1,
                 org_id,
                 user_create,
-                date_create
+                date_create,
+                user_closed,
+                date_closed
             }]);
-        // const res_ticket = await knex('tickets').where({ ticket_number }).first();
         response.ok(res, ticket_number);
     }
     catch (error) {
         console.log(error);
         logger('ticket/store', error);
+        res.status(500).end();
+    }
+}
+
+const publish = async function (req, res) {
+    try {
+        if (req.method !== 'POST') return res.status(405).end('Method not Allowed');
+        auth_jwt_bearer(req, res);
+        const now = new Date();
+        const {
+            customer_id,
+            group_ticket_number = date.format(now, 'DDHHmmSS'),
+        } = req.body;
+
+        await knex('tickets').update({ group_ticket_number }).where({ customer_id }).whereNull('group_ticket_number');
+        response.ok(res, group_ticket_number);
+    }
+    catch (error) {
+        console.log(error);
+        logger('ticket/publish', error);
+        res.status(500).end();
+    }
+}
+
+const data_publish = async function (req, res) {
+    try {
+        if (req.method !== 'GET') return res.status(405).end();
+        auth_jwt_bearer(req, res);
+        const { customer_id } = req.params;
+        const tickets = await knex('tickets').where({ customer_id }).whereNull('group_ticket_number');
+        response.ok(res, tickets);
+    }
+    catch (error) {
+        console.log(error);
+        logger('ticket/index', error);
         res.status(500).end();
     }
 }
@@ -102,5 +143,7 @@ const history_transaction = async function (req, res) {
 module.exports = {
     index,
     store,
+    publish,
+    data_publish,
     history_transaction,
 }
