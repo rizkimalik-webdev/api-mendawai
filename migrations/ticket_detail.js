@@ -5,11 +5,9 @@ const up = function(knex) {
         table.string('ticket_number', 50).notNullable();
         table.string('cust_name', 50);
         table.string('cust_email', 50);
+        table.string('cust_telephone', 50);
         table.text('cust_address');
-        table.string('cust_type', 50);
         table.string('account_no', 50);
-        table.string('priority_scale', 50);
-        table.string('source_information', 50);
         table.string('thread_id', 50);
     })
 };

@@ -94,6 +94,7 @@ module.exports = function (app) {
         api.route('/store').post(ticket.store);
         api.route('/publish').post(ticket.publish);
         api.route('/data_publish/:customer_id').get(ticket.data_publish);
+        api.route('/interaction/:ticket_number').get(ticket.ticket_interactions);
         api.route('/history_transaction/:customer_id').get(ticket.history_transaction);
     });
 

@@ -16,12 +16,15 @@ const up = function(knex) {
         table.integer('sla');
         table.string('ticket_position', 5);
         table.integer('org_id', 5);
+        table.string('type_customer', 50);
+        table.string('priority_scale', 50);
+        table.string('source_information', 50);
         table.string('user_create', 50);
         table.timestamp('date_create');
-        table.string('user_solved', 50);
-        table.timestamp('date_solved');
         table.string('user_closed', 50);
         table.timestamp('date_closed');
+        // table.string('user_solved', 50);
+        // table.timestamp('date_solved');
     })
 };
 
