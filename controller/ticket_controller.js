@@ -22,6 +22,21 @@ const index = async function (req, res) {
     }
 }
 
+const show = async function (req, res) {
+    try {
+        if (req.method !== 'GET') return res.status(405).end();
+        auth_jwt_bearer(req, res);
+        const { ticket_number } = req.params;
+        const tickets = await knex('tickets').where({ ticket_number }).first();
+        response.ok(res, tickets);
+    }
+    catch (error) {
+        console.log(error);
+        logger('ticket/show', error);
+        res.status(500).end();
+    }
+}
+
 
 const store = async function (req, res) {
     try {
@@ -44,6 +59,7 @@ const store = async function (req, res) {
             type_customer,
             priority_scale,
             source_information,
+            type_complaint,
             user_create,
             date_create,
             cust_name,
@@ -76,6 +92,7 @@ const store = async function (req, res) {
                 type_customer,
                 priority_scale,
                 source_information,
+                type_complaint,
                 user_create,
                 date_create,
                 user_closed,
@@ -166,7 +183,7 @@ const ticket_interactions = async function (req, res) {
         auth_jwt_bearer(req, res);
         const { ticket_number } = req.params;
         const res_data = await knex('ticket_interactions')
-            .select('ticket_number', 'response_complaint', 'channel', 'status', 'user_create', 'created_at', 'first_create')
+            .select('id','ticket_number', 'response_complaint', 'channel', 'status', 'user_create', 'created_at', 'first_create')
             .where({ ticket_number })
             .orderBy('id', 'desc');
         response.ok(res, res_data);
@@ -241,6 +258,7 @@ const history_transaction = async function (req, res) {
 
 module.exports = {
     index,
+    show,
     store,
     publish,
     data_publish,

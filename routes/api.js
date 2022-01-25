@@ -71,6 +71,10 @@ module.exports = function (app) {
         api.route('/delete/:category_sublv3_id').delete(master.categorysublv3.destroy);
     });
     
+    app.prefix('/organization', function (api) {
+        api.route('/').get(master.organization.index);
+    });
+    
     app.prefix('/customer',  function (api) {
         api.route('/').get(customer.index);
         api.route('/show/:customer_id').get(customer.show);
@@ -92,6 +96,7 @@ module.exports = function (app) {
     app.prefix('/ticket',  function (api) {
         api.route('/').get(ticket.index);
         api.route('/store').post(ticket.store);
+        api.route('/show/:ticket_number').get(ticket.show);
         api.route('/publish').post(ticket.publish);
         api.route('/data_publish/:customer_id').get(ticket.data_publish);
         api.route('/interaction/:ticket_number').get(ticket.ticket_interactions);
