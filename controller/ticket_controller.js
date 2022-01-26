@@ -5,7 +5,7 @@ const id = require('date-and-time/locale/id');
 const { auth_jwt_bearer } = require('../middleware');
 const logger = require('../helper/logger');
 const response = require('../helper/json_response');
-const datetime = require('../helper/datetime_format');
+const { datetime, isostring } = require('../helper/datetime_format');
 date.locale(id);
 
 const index = async function (req, res) {
@@ -28,6 +28,7 @@ const show = async function (req, res) {
         auth_jwt_bearer(req, res);
         const { ticket_number } = req.params;
         const tickets = await knex('tickets').where({ ticket_number }).first();
+        tickets.date_create = isostring(tickets.date_create);
         response.ok(res, tickets);
     }
     catch (error) {
@@ -182,11 +183,14 @@ const ticket_interactions = async function (req, res) {
         if (req.method !== 'GET') return res.status(405).end();
         auth_jwt_bearer(req, res);
         const { ticket_number } = req.params;
-        const res_data = await knex('ticket_interactions')
-            .select('id','ticket_number', 'response_complaint', 'channel', 'status', 'user_create', 'created_at', 'first_create')
-            .where({ ticket_number })
-            .orderBy('id', 'desc');
-        response.ok(res, res_data);
+        const data = await knex('ticket_interactions')
+            .select('id', 'ticket_number', 'response_complaint', 'channel', 'status', 'user_create', 'created_at', 'first_create')
+            .where({ ticket_number }).orderBy('id', 'desc');
+
+        for (let i = 0; i < data.length; i++) {
+            data[i].created_at = datetime(data[i].created_at)
+        }
+        response.ok(res, data);
     }
     catch (error) {
         console.log(error);
@@ -222,9 +226,11 @@ const data_publish = async function (req, res) {
         const { customer_id } = req.params;
         const tickets = await knex('tickets')
             .select('customer_id', 'ticket_number', 'ticket_source', 'status', 'category_id', 'category_sublv1_id', 'category_sublv2_id', 'category_sublv3_id', 'date_create', 'complaint_detail', 'response_detail')
-            .where({ customer_id })
-            .whereNull('group_ticket_number')
-            .orderBy('id', 'desc');
+            .where({ customer_id }).whereNull('group_ticket_number').orderBy('id', 'desc');
+            
+        for (let i = 0; i < tickets.length; i++) {
+            tickets[i].date_create = datetime(tickets[i].date_create)
+        }
         response.ok(res, tickets);
     }
     catch (error) {
