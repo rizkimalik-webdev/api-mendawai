@@ -5,8 +5,18 @@ const index = async function (req, res) {
     try {
         if (req.method !== 'GET') return res.status(405).end();
         const { category_id } = req.params;
-        const category = await knex('category_sub_lv1').where({ category_id }).select('category_id', 'category_sublv1_id', 'sub_name', 'description');
-        response.ok(res, category);
+        let data = '';
+        if (category_id === 'all') {
+            data = await knex('category_sub_lv1').select('category_id', 'category_sublv1_id', 'sub_name', 'description');
+        }
+        else {
+            data = await knex('category_sub_lv1').where({ category_id }).select('category_id', 'category_sublv1_id', 'sub_name', 'description');
+        }
+        for (let i = 0; i < data.length; i++) {
+            const { name } = await knex('category').where({ category_id: data[i].category_id }).first();
+            data[i].category_name = name;
+        }
+        response.ok(res, data);
     }
     catch (error) {
         console.log(error);

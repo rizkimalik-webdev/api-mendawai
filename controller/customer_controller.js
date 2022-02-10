@@ -164,7 +164,7 @@ const insert_customer_sosmed = async function (req) {
         if (check_data.length === 0) {
             await knex('customers')
                 .insert([{
-                    customer_id: customerid,
+                    customer_id: customer_id,
                     name: name,
                     email: email,
                     source: 'chat',

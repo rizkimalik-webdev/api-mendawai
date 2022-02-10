@@ -4,7 +4,6 @@ const logger = require('../../helper/logger');
 const facebook_token = async function (req, res) {
     try {
         if (req.method !== 'POST') return res.status(405).end('Method not Allowed');
-
         const data = req.body;
 
         for (let i = 0; i < data.length; i++) {
@@ -12,35 +11,34 @@ const facebook_token = async function (req, res) {
                 .count('page_id as jml')
                 .where({ page_id: data[i].id, channel: 'Facebook' })
                 .first();
-                // console.log(check);
 
             if (check.jml > 0) {
                 await knex('sosmed_channels')
-                .where({ page_id: data[i].id, channel: 'Facebook' })
-                .update({
-                    page_name: data[i].name,
-                    page_category: data[i].category,
-                    channel: 'Facebook',
-                    account_id: data[i].id,
-                    token: data[i].access_token,
-                    token_secret: '',
-                    user_secret: '',
-                    updated_at: knex.fn.now(),
-                })
-            } 
+                    .where({ page_id: data[i].id, channel: 'Facebook' })
+                    .update({
+                        page_name: data[i].name,
+                        page_category: data[i].category,
+                        channel: 'Facebook',
+                        account_id: data[i].id,
+                        token: data[i].access_token,
+                        token_secret: '',
+                        user_secret: '',
+                        updated_at: knex.fn.now(),
+                    })
+            }
             else {
                 await knex('sosmed_channels')
-                .insert({
-                    page_id: data[i].id,
-                    page_name: data[i].name,
-                    page_category: data[i].category,
-                    channel: 'Facebook',
-                    account_id: data[i].id,
-                    token: data[i].access_token,
-                    token_secret: '',
-                    user_secret: '',
-                    created_at: knex.fn.now(),
-                })
+                    .insert({
+                        page_id: data[i].id,
+                        page_name: data[i].name,
+                        page_category: data[i].category,
+                        channel: 'Facebook',
+                        account_id: data[i].id,
+                        token: data[i].access_token,
+                        token_secret: '',
+                        user_secret: '',
+                        created_at: knex.fn.now(),
+                    })
             }
         }
         res.json({
@@ -98,4 +96,4 @@ const facebook_feed = async function (req, res) {
     }
 }
 
-module.exports= { facebook_token, facebook_messenger, facebook_feed, facebook_mention }
+module.exports = { facebook_token, facebook_messenger, facebook_feed, facebook_mention }

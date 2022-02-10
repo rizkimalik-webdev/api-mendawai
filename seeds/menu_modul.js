@@ -30,28 +30,28 @@ exports.seed = function (knex) {
                     menu_id: 2,
                     menu_modul_name: "Category",
                     number: 1,
-                    path: '/category1',
+                    path: '/category',
                     icon: null,
                     is_root: false
                 },{
                     menu_id: 2,
                     menu_modul_name: "Category Produk",
                     number: 2,
-                    path: '/category2',
+                    path: '/categorysublv1',
                     icon: null,
                     is_root: false
                 },{
                     menu_id: 2,
                     menu_modul_name: "Category Case",
                     number: 3,
-                    path: '/category3',
+                    path: '/categorysublv2',
                     icon: null,
                     is_root: false
                 },{
                     menu_id: 2,
                     menu_modul_name: "Category Detail",
                     number: 4,
-                    path: '/category4',
+                    path: '/categorysublv3',
                     icon: null,
                     is_root: false
                 },

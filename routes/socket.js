@@ -49,9 +49,11 @@ module.exports = function (io) {
                 });
             }
             else {
-                socket.join(content.chat_id);
+                // socket.join(content.chat_id);
+                socket.join(socket.id);
                 console.log(`${content.email}, join chat: ${content.chat_id}`);
             }
+            console.log(socket.rooms);
         });
         
         socket.on('blending-chat', (content) => {
