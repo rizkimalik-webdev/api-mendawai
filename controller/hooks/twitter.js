@@ -74,6 +74,7 @@ const twitter_token = async function (req, res) {
     }
     catch (error) {
         console.log(error);
+        logger('hooks/twitter_token', error);
     }
 }
 
