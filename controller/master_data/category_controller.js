@@ -34,7 +34,6 @@ const store = async function (req, res) {
         const {
             name,
             description,
-            user_create,
             created_at = knex.fn.now(),
         } = req.body;
         const category = await knex('category').select('category_id').orderBy('category_id', 'desc').first();
@@ -44,7 +43,7 @@ const store = async function (req, res) {
             categoryid = `CAT-10001`;
         }
         else {
-            const category_no = Number(category_id.split('-')[1]) + 1;
+            const category_no = Number(category.category_id.split('-')[1]) + 1;
             categoryid = `CAT-${category_no}`;
         }
 
@@ -53,7 +52,6 @@ const store = async function (req, res) {
                 category_id: categoryid,
                 name,
                 description,
-                user_create,
                 created_at
             }]);
         response.ok(res, categoryid);
