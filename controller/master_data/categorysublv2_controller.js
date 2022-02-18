@@ -13,10 +13,10 @@ const index = async function (req, res) {
             data = await knex('category_sub_lv2').where({ category_sublv1_id });
         }
         for (let i = 0; i < data.length; i++) {
-            const { name } = await knex('category').where({ category_id: data[i].category_id }).first();
-            const { sub_name } = await knex('category_sub_lv1').where({ category_sublv1_id: data[i].category_sublv1_id }).first();
+            const { name } = await knex('category').where({ category_id: data[i].category_id }).select('name').first();
+            const { sub_name } = await knex('category_sub_lv1').where({ category_sublv1_id: data[i].category_sublv1_id }).select('sub_name').first();
             data[i].category_name = name;
-            data[i].category_sublv2_name = sub_name;
+            data[i].category_sublv1_name = sub_name;
         }
         response.ok(res, data);
     }
