@@ -70,7 +70,6 @@ const update = async function (req, res) {
             category_id,
             name,
             description,
-            user_update,
             updated_at = knex.fn.now()
         } = req.body;
 
@@ -78,7 +77,6 @@ const update = async function (req, res) {
             .update({
                 name,
                 description,
-                user_update,
                 updated_at
             })
             .where({ category_id });
