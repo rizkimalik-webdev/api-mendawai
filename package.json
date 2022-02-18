@@ -26,6 +26,7 @@
     "nodejs-file-downloader": "^4.7.4",
     "nodemailer": "^6.7.2",
     "nodemon": "^2.0.12",
+    "pg": "^8.7.3",
     "socket.io": "^4.2.0",
     "tedious": "^14.0.0"
   }
