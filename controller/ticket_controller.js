@@ -12,7 +12,7 @@ const index = async function (req, res) {
     try {
         if (req.method !== 'GET') return res.status(405).end();
         auth_jwt_bearer(req, res);
-        const tickets = await knex('tickets');
+        const tickets = await knex('view_tickets');
         response.ok(res, tickets);
     }
     catch (error) {
@@ -224,9 +224,7 @@ const data_publish = async function (req, res) {
         if (req.method !== 'GET') return res.status(405).end();
         auth_jwt_bearer(req, res);
         const { customer_id } = req.params;
-        const tickets = await knex('tickets')
-            .select('customer_id', 'ticket_number', 'ticket_source', 'status', 'category_id', 'category_sublv1_id', 'category_sublv2_id', 'category_sublv3_id', 'date_create', 'complaint_detail', 'response_detail')
-            .where({ customer_id }).whereNull('group_ticket_number').orderBy('id', 'desc');
+        const tickets = await knex('view_tickets').where({ customer_id }).whereNull('group_ticket_number').orderBy('id', 'desc');
             
         for (let i = 0; i < tickets.length; i++) {
             tickets[i].date_create = datetime(tickets[i].date_create)
@@ -245,9 +243,7 @@ const history_transaction = async function (req, res) {
         if (req.method !== 'GET') return res.status(405).end();
         auth_jwt_bearer(req, res);
         const { customer_id } = req.params;
-        const tickets = await knex('tickets')
-            .select('ticket_number', 'group_ticket_number', 'ticket_source', 'status', 'category_id', 'category_sublv1_id', 'category_sublv2_id', 'category_sublv3_id', 'date_create', 'complaint_detail', 'response_detail')
-            .where({ customer_id }).limit(5).orderBy('id', 'desc');
+        const tickets = await knex('view_tickets').where({ customer_id }).limit(5).orderBy('id', 'desc');
 
         for (let i = 0; i < tickets.length; i++) {
             tickets[i].date_create = datetime(tickets[i].date_create)
