@@ -225,7 +225,7 @@ const data_publish = async function (req, res) {
         auth_jwt_bearer(req, res);
         const { customer_id } = req.params;
         const tickets = await knex('view_tickets').where({ customer_id }).whereNull('group_ticket_number').orderBy('id', 'desc');
-            
+
         for (let i = 0; i < tickets.length; i++) {
             tickets[i].date_create = datetime(tickets[i].date_create)
         }
@@ -258,6 +258,30 @@ const history_transaction = async function (req, res) {
     }
 }
 
+const history_ticket = async function (req, res) {
+    try {
+        if (req.method !== 'POST') return res.status(405).end();
+        auth_jwt_bearer(req, res);
+        const { date_from, date_to } = req.body;
+        const tickets = await knex.raw(`
+            SELECT * FROM view_tickets 
+            WHERE CONVERT(DATE, date_create) >= CONVERT(DATE, '${date_from}') AND CONVERT(DATE, date_create) <= CONVERT(DATE, '${date_to}')
+            ORDER BY date_create DESC
+        `);
+
+        for (let i = 0; i < tickets.length; i++) {
+            tickets[i].date_create = datetime(tickets[i].date_create)
+        }
+
+        response.ok(res, tickets);
+    }
+    catch (error) {
+        console.log(error);
+        logger('ticket/history_ticket', error);
+        res.status(500).end();
+    }
+}
+
 module.exports = {
     index,
     show,
@@ -266,4 +290,5 @@ module.exports = {
     data_publish,
     history_transaction,
     ticket_interactions,
+    history_ticket,
 }
