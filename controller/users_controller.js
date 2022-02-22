@@ -11,6 +11,14 @@ const index = async function (req, res) {
         if (req.method !== 'GET') return res.status(405).end();
         auth_jwt_bearer(req, res);
         const users = await knex('users').orderBy(['username', 'user_level']);
+
+        for (let i = 0; i < users.length; i++) {
+            const org = await knex('organizations').where({ id: users[i].organization }).select('organization_name').first();
+            const dept = await knex('departments').where({ id: users[i].department }).select('department_name').first();
+            users[i].organization_name = org?.organization_name;
+            users[i].department_name = dept?.department_name;
+        }
+
         response.ok(res, users);
     }
     catch (error) {
@@ -47,6 +55,7 @@ const store = async function (req, res) {
             password,
             user_level,
             organization,
+            department,
             inbound,
             outbound,
             sms,
@@ -82,6 +91,7 @@ const store = async function (req, res) {
                 login: 0,
                 aux: 0,
                 organization,
+                department,
                 inbound,
                 outbound,
                 sms,
@@ -128,6 +138,7 @@ const update = async function (req, res) {
             email_address,
             user_level,
             organization,
+            department,
             inbound,
             outbound,
             sms,
@@ -158,6 +169,7 @@ const update = async function (req, res) {
                 email_address,
                 user_level,
                 organization,
+                department,
                 inbound,
                 outbound,
                 sms,
