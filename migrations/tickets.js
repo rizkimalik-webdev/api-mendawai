@@ -16,6 +16,7 @@ const up = function(knex) {
         table.integer('sla');
         table.string('ticket_position', 5);
         table.integer('org_id', 5);
+        table.integer('department_id', 5);
         table.string('type_customer', 50);
         table.string('priority_scale', 50);
         table.string('source_information', 50);

@@ -16,11 +16,11 @@ const index = async function (req, res) {
             const { name } = await knex('category').where({ category_id: data[i].category_id }).select('name').first();
             const { sub_name } = await knex('category_sub_lv1').where({ category_sublv1_id: data[i].category_sublv1_id }).select('sub_name').first();
             const sublv2 = await knex('category_sub_lv2').where({ category_sublv2_id: data[i].category_sublv2_id }).select('sub_name').first();
-            const { organization_name } = await knex('organizations').where({ id: data[i].org_id }).select('organization_name').first();
+            const { department_name } = await knex('departments').where({ id: data[i].department_id }).select('department_name').first();
             data[i].category_name = name;
             data[i].category_sublv1_name = sub_name;
             data[i].category_sublv2_name = sublv2.sub_name;
-            data[i].org_name = organization_name;
+            data[i].department_name = department_name;
         }
         response.ok(res, data);
     }
@@ -55,7 +55,7 @@ const store = async function (req, res) {
             sub_name,
             description,
             sla,
-            org_id
+            department_id
         } = req.body;
         const subcategory3 = await knex('category_sub_lv3')
             .select('category_sublv3_id')
@@ -79,7 +79,7 @@ const store = async function (req, res) {
                 sub_name,
                 description,
                 sla,
-                org_id
+                department_id
             }]);
         response.ok(res, categorysublv3_id);
     }
@@ -101,7 +101,7 @@ const update = async function (req, res) {
             sub_name,
             description,
             sla,
-            org_id
+            department_id
         } = req.body;
 
         await knex('category_sub_lv3')
@@ -112,7 +112,7 @@ const update = async function (req, res) {
                 sub_name,
                 description,
                 sla,
-                org_id
+                department_id
             })
             .where({ category_sublv3_id });
         response.ok(res, 'success update');

@@ -11,7 +11,8 @@ const up = function (knex) {
             g.cust_name,
             g.cust_email,
             g.cust_telephone,
-            g.cust_address
+            g.cust_address,
+            h.department_name
         FROM
             tickets as a
             LEFT OUTER JOIN organizations as b ON b.id=a.org_id
@@ -20,6 +21,7 @@ const up = function (knex) {
             LEFT OUTER JOIN category_sub_lv2 as e ON e.category_sublv2_id=a.category_sublv2_id
             LEFT OUTER JOIN category_sub_lv3 as f ON f.category_sublv3_id=a.category_sublv3_id
             LEFT OUTER JOIN ticket_detail as g ON g.ticket_number=a.ticket_number
+            LEFT OUTER JOIN departments as h ON h.id=a.department_id
     )`);
 };
 

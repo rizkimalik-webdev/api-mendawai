@@ -6,6 +6,7 @@ const categorysublv1 = require('./categorysublv1_controller');
 const categorysublv2 = require('./categorysublv2_controller');
 const categorysublv3 = require('./categorysublv3_controller');
 const organization = require('./organization_controller');
+const department = require('./department_controller');
 
 module.exports =  {
     channel,
@@ -16,4 +17,5 @@ module.exports =  {
     categorysublv2,
     categorysublv3,
     organization,
+    department,
 }

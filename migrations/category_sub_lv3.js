@@ -8,7 +8,7 @@ const up = function(knex) {
         table.string('category_sublv3_id', 50).unique().notNullable();
         table.string('sub_name', 150).notNullable();
         table.string('description');
-        table.integer('org_id', 10);
+        table.integer('department_id', 5);
         table.integer('sla', 5);
     })
 };

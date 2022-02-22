@@ -75,6 +75,10 @@ module.exports = function (app) {
         api.route('/').get(master.organization.index);
     });
     
+    app.prefix('/department', function (api) {
+        api.route('/').get(master.department.index);
+    });
+    
     app.prefix('/customer',  function (api) {
         api.route('/').get(customer.index);
         api.route('/show/:customer_id').get(customer.show);
