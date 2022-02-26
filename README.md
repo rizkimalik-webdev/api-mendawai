@@ -15,21 +15,6 @@
     <br> 
 </p>
 
-## 📝 Table of Contents
-
-- [About](#about)
-- [Demo / Working](#demo)
-- [How it works](#working)
-
-
-## 💭 How it works <a name = "working"></a>
-
-The bot first extracts the word from the comment and then fetches word definitions, part of speech, example and source from the Oxford Dictionary API.
-
-If the word does not exist in the Oxford Dictionary, the Oxford API then returns a 404 response upon which the bot then tries to fetch results form the Urban Dictionary API.
-
-The bot uses the Pushshift API to fetch comments, PRAW module to reply to comments and Heroku as a server.
-
 
 ## 🎈 Usage <a name = "usage"></a>
 
@@ -48,6 +33,17 @@ yarn start
 
 End with an example of getting some data out of the system or using it for a little demo.
 
+knex migration:
+```
+yarn knex migrate:latest
+yarn knex migrate:up/down file_name.js
+```
+
+knex seeds:
+```
+yarn knex seed:run
+yarn knex seed:run --specific=file_name.js
+```
 
 ## API Reference
 
@@ -71,17 +67,6 @@ End with an example of getting some data out of the system or using it for a lit
 | :-------- | :------- | :-------------------------------- |
 | `id`      | `string` | **Required**. Id of item to fetch |
 
-#### add(num1, num2)
-
-Takes two numbers and returns the sum.
-
-
-
-## 🚀 Deploying your own
-
-To see an example project on how to deploy your bot, please see my own configuration:
-
-- **Heroku**: https://github.com/kylelobo/Reddit-Bot#deploying_the_bot
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 

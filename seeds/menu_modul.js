@@ -7,21 +7,21 @@ exports.seed = function (knex) {
                     menu_id: 1,
                     menu_modul_name: "Ticket",
                     number: 0,
-                    path: '/dash_ticket',
+                    path: '/dash/ticket',
                     icon: null,
                     is_root: false
                 },{
                     menu_id: 1,
                     menu_modul_name: "Sosial Media",
                     number: 0,
-                    path: '/dash_sosmed',
+                    path: '/dash/sosmed',
                     icon: null,
                     is_root: false
                 },{
                     menu_id: 1,
                     menu_modul_name: "Sentiment",
                     number: 0,
-                    path: '/dash_sentiment',
+                    path: '/dash/sentiment',
                     icon: null,
                     is_root: false
                 },
@@ -54,6 +54,34 @@ exports.seed = function (knex) {
                     path: '/categorysublv3',
                     icon: null,
                     is_root: false
+                },{
+                    menu_id: 2,
+                    menu_modul_name: "Unit Case",
+                    number: 5,
+                    path: '/unit_case',
+                    icon: null,
+                    is_root: false
+                },{
+                    menu_id: 2,
+                    menu_modul_name: "Unit Agent",
+                    number: 6,
+                    path: '/unit_agent',
+                    icon: null,
+                    is_root: false
+                },{
+                    menu_id: 2,
+                    menu_modul_name: "Status Ticket",
+                    number: 7,
+                    path: '/status',
+                    icon: null,
+                    is_root: false
+                },{
+                    menu_id: 2,
+                    menu_modul_name: "Channel Ticket",
+                    number: 8,
+                    path: '/channel',
+                    icon: null,
+                    is_root: false
                 },
 
                 /* modul channels */
@@ -61,21 +89,21 @@ exports.seed = function (knex) {
                     menu_id: 5,
                     menu_modul_name: "Inbound",
                     number: 0,
-                    path: '/channel_inbound',
+                    path: '/channel/inbound',
                     icon: null,
                     is_root: false
                 },{ 
                     menu_id: 5,
                     menu_modul_name: "Email",
                     number: 0,
-                    path: '/channel_email',
+                    path: '/channel/email',
                     icon: null,
                     is_root: false
                 },{ 
                     menu_id: 5,
                     menu_modul_name: "Social Media",
                     number: 0,
-                    path: '/channel_socmed',
+                    path: '/channel/socmed',
                     icon: null,
                     is_root: false
                 },
@@ -102,14 +130,14 @@ exports.seed = function (knex) {
                     menu_id: 7,
                     menu_modul_name: "Report Ticket",
                     number: 0,
-                    path: '/report_default',
+                    path: '/report/default',
                     icon: null,
                     is_root: false
                 },{ 
                     menu_id: 7,
                     menu_modul_name: "Report Email",
                     number: 0,
-                    path: '/report_email',
+                    path: '/report/email',
                     icon: null,
                     is_root: false
                 },
