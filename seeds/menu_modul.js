@@ -82,6 +82,27 @@ exports.seed = function (knex) {
                     path: '/channel',
                     icon: null,
                     is_root: false
+                },{
+                    menu_id: 2,
+                    menu_modul_name: "Priority Scale",
+                    number: 9,
+                    path: '/priority_scale',
+                    icon: null,
+                    is_root: false
+                },{
+                    menu_id: 2,
+                    menu_modul_name: "Type Customer",
+                    number: 10,
+                    path: '/type_customer',
+                    icon: null,
+                    is_root: false
+                },{
+                    menu_id: 2,
+                    menu_modul_name: "Soruce of Information",
+                    number: 11,
+                    path: '/source_information',
+                    icon: null,
+                    is_root: false
                 },
 
                 /* modul channels */
