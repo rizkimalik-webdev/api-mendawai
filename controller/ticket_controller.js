@@ -144,9 +144,24 @@ const store = async function (req, res) {
                 cust_telephone,
                 cust_address,
             });
+
+            //? interaction layer 1
             store_ticket_interactions({
                 ticket_number,
                 response_complaint: response_detail,
+                status: 'Progress',
+                channel: ticket_source,
+                user_create,
+                first_create: true,
+                dispatch_ticket: false,
+                dispatch_to_layer: '1',
+                interaction_type: 'Transaction'
+            });
+
+            //? interaction auto dispatch layer 2
+            store_ticket_interactions({
+                ticket_number,
+                response_complaint: 'Auto Dispatch To Layer 2',
                 status: 'Progress',
                 channel: ticket_source,
                 user_create,
