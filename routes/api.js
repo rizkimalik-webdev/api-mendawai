@@ -86,6 +86,7 @@ module.exports = function (app) {
         api.route('/update').put(customer.update);
         api.route('/delete/:customer_id').delete(customer.destroy);
         api.route('/channel').get(channel.index);
+        api.route('/journey/:customer_id').get(customer.customer_journey);
     });
 
     app.prefix('/user',  function (api) {
