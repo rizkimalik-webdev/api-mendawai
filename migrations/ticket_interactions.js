@@ -10,8 +10,8 @@ const up = function(knex) {
         table.string('channel', 50);
         table.string('user_create', 100);
         table.timestamp('created_at');
-        table.string('first_create', 10);
-        table.string('dispatch_ticket', 10);
+        table.boolean('first_create');
+        table.boolean('dispatch_ticket');
         table.string('dispatch_to_layer', 10);
         table.string('dispatch_to_dept', 10);
         table.string('dispatch_to_user', 10);

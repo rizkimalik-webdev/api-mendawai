@@ -69,51 +69,94 @@ const store = async function (req, res) {
             cust_address,
         } = req.body;
 
-        let user_closed, date_closed;
         if (status === 'Closed') {
-            user_closed = user_create;
-            date_closed = date_create;
+            await knex('tickets')
+                .insert([{
+                    customer_id,
+                    ticket_number,
+                    ticket_source,
+                    status,
+                    category_id,
+                    category_sublv1_id,
+                    category_sublv2_id,
+                    category_sublv3_id,
+                    complaint_detail,
+                    response_detail,
+                    sla,
+                    ticket_position: 1,
+                    org_id,
+                    department_id,
+                    type_customer,
+                    priority_scale,
+                    source_information,
+                    user_create,
+                    date_create,
+                    user_closed: user_create,
+                    date_closed: date_create
+                }]);
+            store_ticket_detail({
+                ticket_number,
+                cust_name,
+                cust_email,
+                cust_telephone,
+                cust_address,
+            });
+            store_ticket_interactions({
+                ticket_number,
+                response_complaint: response_detail,
+                status,
+                channel: ticket_source,
+                user_create,
+                first_create: true,
+                dispatch_ticket: false,
+                dispatch_to_layer: '1',
+                interaction_type: 'Transaction'
+            });
+        }
+        else {
+            //? ticket status <> closed
+            await knex('tickets')
+                .insert([{
+                    customer_id,
+                    ticket_number,
+                    ticket_source,
+                    status: 'Progress',
+                    category_id,
+                    category_sublv1_id,
+                    category_sublv2_id,
+                    category_sublv3_id,
+                    complaint_detail,
+                    response_detail,
+                    sla,
+                    ticket_position: 2, //? auto dispatch layer 2
+                    org_id,
+                    department_id,
+                    type_customer,
+                    priority_scale,
+                    source_information,
+                    user_create,
+                    date_create
+                }]);
+            store_ticket_detail({
+                ticket_number,
+                cust_name,
+                cust_email,
+                cust_telephone,
+                cust_address,
+            });
+            store_ticket_interactions({
+                ticket_number,
+                response_complaint: response_detail,
+                status: 'Progress',
+                channel: ticket_source,
+                user_create,
+                first_create: false,
+                dispatch_ticket: true,
+                dispatch_to_layer: '2', //? auto dispatch layer 2
+                interaction_type: 'Escalation'
+            });
         }
 
-        await knex('tickets')
-            .insert([{
-                customer_id,
-                ticket_number,
-                ticket_source,
-                status,
-                category_id,
-                category_sublv1_id,
-                category_sublv2_id,
-                category_sublv3_id,
-                complaint_detail,
-                response_detail,
-                sla,
-                ticket_position: 1,
-                org_id,
-                department_id,
-                type_customer,
-                priority_scale,
-                source_information,
-                user_create,
-                date_create,
-                user_closed,
-                date_closed
-            }]);
-        store_ticket_detail({
-            ticket_number,
-            cust_name,
-            cust_email,
-            cust_telephone,
-            cust_address,
-        });
-        store_ticket_interactions({
-            ticket_number,
-            response_complaint: response_detail,
-            status,
-            channel: ticket_source,
-            user_create,
-            first_create: user_create,
-        });
         response.ok(res, ticket_number);
     }
     catch (error) {
@@ -158,6 +201,9 @@ const store_ticket_interactions = async function (req) {
             channel,
             user_create,
             first_create,
+            dispatch_ticket,
+            dispatch_to_layer,
+            interaction_type,
             created_at = knex.fn.now()
         } = req;
 
@@ -170,6 +216,9 @@ const store_ticket_interactions = async function (req) {
                 user_create,
                 created_at,
                 first_create,
+                dispatch_ticket,
+                dispatch_to_layer,
+                interaction_type,
             }]);
     }
     catch (error) {
@@ -184,7 +233,7 @@ const ticket_interactions = async function (req, res) {
         auth_jwt_bearer(req, res);
         const { ticket_number } = req.params;
         const data = await knex('ticket_interactions')
-            .select('id', 'ticket_number', 'response_complaint', 'channel', 'status', 'user_create', 'created_at', 'first_create')
+            .select('id', 'ticket_number', 'response_complaint', 'channel', 'status', 'user_create', 'created_at', 'first_create', 'dispatch_ticket', 'dispatch_to_layer', 'interaction_type')
             .where({ ticket_number }).orderBy('id', 'desc');
 
         for (let i = 0; i < data.length; i++) {
@@ -267,7 +316,7 @@ const history_ticket = async function (req, res) {
             .where('date_create', '>=', date_from)
             .andWhere('date_create', '<=', date_to)
             .orderBy('date_create', 'desc');
-            
+
         // const tickets = await knex.raw(`
         //     SELECT * FROM view_tickets 
         //     WHERE CONVERT(DATE, date_create) >= CONVERT(DATE, '${date_from}') AND CONVERT(DATE, date_create) <= CONVERT(DATE, '${date_to}')
