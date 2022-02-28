@@ -120,7 +120,7 @@ const store = async function (req, res) {
                     customer_id,
                     ticket_number,
                     ticket_source,
-                    status: 'Progress',
+                    status,
                     category_id,
                     category_sublv1_id,
                     category_sublv2_id,
@@ -149,7 +149,7 @@ const store = async function (req, res) {
             store_ticket_interactions({
                 ticket_number,
                 response_complaint: response_detail,
-                status: 'Progress',
+                status,
                 channel: ticket_source,
                 user_create,
                 first_create: 'Yes',
@@ -162,7 +162,7 @@ const store = async function (req, res) {
             store_ticket_interactions({
                 ticket_number,
                 response_complaint: 'Auto Dispatch To Layer 2',
-                status: 'Progress',
+                status,
                 channel: ticket_source,
                 user_create,
                 first_create: 'No',
