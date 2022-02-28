@@ -263,11 +263,16 @@ const history_ticket = async function (req, res) {
         if (req.method !== 'POST') return res.status(405).end();
         auth_jwt_bearer(req, res);
         const { date_from, date_to } = req.body;
-        const tickets = await knex.raw(`
-            SELECT * FROM view_tickets 
-            WHERE CONVERT(DATE, date_create) >= CONVERT(DATE, '${date_from}') AND CONVERT(DATE, date_create) <= CONVERT(DATE, '${date_to}')
-            ORDER BY date_create DESC
-        `);
+        const tickets = await knex('view_tickets')
+            .where('date_create', '>=', date_from)
+            .andWhere('date_create', '<=', date_to)
+            .orderBy('date_create', 'desc');
+            
+        // const tickets = await knex.raw(`
+        //     SELECT * FROM view_tickets 
+        //     WHERE CONVERT(DATE, date_create) >= CONVERT(DATE, '${date_from}') AND CONVERT(DATE, date_create) <= CONVERT(DATE, '${date_to}')
+        //     ORDER BY date_create DESC
+        // `);
 
         for (let i = 0; i < tickets.length; i++) {
             tickets[i].date_create = datetime(tickets[i].date_create)
