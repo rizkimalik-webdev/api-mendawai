@@ -307,6 +307,25 @@ const history_transaction = async function (req, res) {
     }
 }
 
+const ticket_escalations = async function (req, res) {
+    try {
+        if (req.method !== 'GET') return res.status(405).end();
+        auth_jwt_bearer(req, res);
+        const { ticket_number } = req.params;
+        const tickets = await knex('view_tickets').where({ ticket_number }).andWhere('ticket_position', '>', '1').orderBy('id', 'desc');
+
+        for (let i = 0; i < tickets.length; i++) {
+            tickets[i].date_create = datetime(tickets[i].date_create)
+        }
+        response.ok(res, tickets);
+    }
+    catch (error) {
+        console.log(error);
+        logger('ticket/history_ticket', error);
+        res.status(500).end();
+    }
+}
+
 const history_ticket = async function (req, res) {
     try {
         if (req.method !== 'POST') return res.status(405).end();
@@ -344,5 +363,6 @@ module.exports = {
     data_publish,
     history_transaction,
     ticket_interactions,
+    ticket_escalations,
     history_ticket,
 }
