@@ -6,7 +6,7 @@ const { auth_jwt_bearer } = require('../middleware');
 const logger = require('../helper/logger');
 const response = require('../helper/json_response');
 const { datetime, isostring } = require('../helper/datetime_format');
-date.locale(id);
+// date.locale(id);
 
 const index = async function (req, res) {
     try {
