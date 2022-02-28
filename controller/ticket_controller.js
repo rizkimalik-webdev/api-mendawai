@@ -107,8 +107,8 @@ const store = async function (req, res) {
                 status,
                 channel: ticket_source,
                 user_create,
-                first_create: true,
-                dispatch_ticket: false,
+                first_create: 'Yes',
+                dispatch_ticket: 'No',
                 dispatch_to_layer: '1',
                 interaction_type: 'Transaction'
             });
@@ -152,8 +152,8 @@ const store = async function (req, res) {
                 status: 'Progress',
                 channel: ticket_source,
                 user_create,
-                first_create: true,
-                dispatch_ticket: false,
+                first_create: 'Yes',
+                dispatch_ticket: 'No',
                 dispatch_to_layer: '1',
                 interaction_type: 'Transaction'
             });
@@ -165,8 +165,8 @@ const store = async function (req, res) {
                 status: 'Progress',
                 channel: ticket_source,
                 user_create,
-                first_create: false,
-                dispatch_ticket: true,
+                first_create: 'No',
+                dispatch_ticket: 'Yes',
                 dispatch_to_layer: '2', //? auto dispatch layer 2
                 interaction_type: 'Escalation'
             });
