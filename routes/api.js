@@ -106,7 +106,7 @@ module.exports = function (app) {
         api.route('/publish/:customer_id').get(ticket.data_publish);
         api.route('/interaction/:ticket_number').get(ticket.ticket_interactions);
         api.route('/transaction/:customer_id').get(ticket.history_transaction);
-        api.route('/escalation/:ticket_number').get(ticket.ticket_escalations);
+        api.route('/escalation').put(ticket.ticket_escalations);
         api.route('/history').post(ticket.history_ticket);
     });
 

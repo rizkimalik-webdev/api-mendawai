@@ -128,7 +128,7 @@ const store = async function (req, res) {
                     complaint_detail,
                     response_detail,
                     sla,
-                    ticket_position: 2, //? auto dispatch layer 2
+                    ticket_position: 1, //? val=2 if auto dispatch layer 2
                     org_id,
                     department_id,
                     type_customer,
@@ -159,7 +159,7 @@ const store = async function (req, res) {
             });
 
             //? interaction auto dispatch layer 2
-            store_ticket_interactions({
+            /* store_ticket_interactions({
                 ticket_number,
                 response_complaint: 'Auto Dispatch To Layer 2',
                 status,
@@ -169,7 +169,7 @@ const store = async function (req, res) {
                 dispatch_ticket: 'Yes',
                 dispatch_to_layer: '2', //? auto dispatch layer 2
                 interaction_type: 'Escalation'
-            });
+            }); */
         }
 
         response.ok(res, ticket_number);
@@ -177,6 +177,54 @@ const store = async function (req, res) {
     catch (error) {
         console.log(error);
         logger('ticket/store', error);
+        res.status(500).end();
+    }
+}
+
+const update = async function (req, res) {
+
+}
+
+const ticket_escalations = async function (req, res) {
+    try {
+        if (req.method !== 'PUT') return res.status(405).end('Method not Allowed');
+        auth_jwt_bearer(req, res);
+        const {
+            ticket_number,
+            status,
+            user_create,
+            ticket_source,
+            department_id,
+            ticket_position,
+            response_detail
+        } = req.body;
+
+
+        await knex('tickets')
+            .update({
+                department_id,
+                ticket_position,
+                response_detail
+            })
+            .where({ ticket_number });
+
+        store_ticket_interactions({
+            ticket_number,
+            response_complaint: response_detail,
+            status,
+            channel: ticket_source,
+            user_create,
+            first_create: 'No',
+            dispatch_ticket: 'Yes',
+            dispatch_to_layer: ticket_position,
+            interaction_type: 'Escalation'
+        });
+
+        response.ok(res, ticket_number);
+    }
+    catch (error) {
+        console.log(error);
+        logger('ticket/ticket_escalations', error);
         res.status(500).end();
     }
 }
@@ -322,7 +370,7 @@ const history_transaction = async function (req, res) {
     }
 }
 
-const ticket_escalations = async function (req, res) {
+/* const ticket_escalations = async function (req, res) {
     try {
         if (req.method !== 'GET') return res.status(405).end();
         auth_jwt_bearer(req, res);
@@ -339,7 +387,7 @@ const ticket_escalations = async function (req, res) {
         logger('ticket/history_ticket', error);
         res.status(500).end();
     }
-}
+} */
 
 const history_ticket = async function (req, res) {
     try {
@@ -374,6 +422,7 @@ module.exports = {
     index,
     show,
     store,
+    update,
     publish,
     data_publish,
     history_transaction,
