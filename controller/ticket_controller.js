@@ -69,56 +69,162 @@ const store = async function (req, res) {
             cust_address,
         } = req.body;
 
-        let user_closed, date_closed;
         if (status === 'Closed') {
-            user_closed = user_create;
-            date_closed = date_create;
+            await knex('tickets')
+                .insert([{
+                    customer_id,
+                    ticket_number,
+                    ticket_source,
+                    status,
+                    category_id,
+                    category_sublv1_id,
+                    category_sublv2_id,
+                    category_sublv3_id,
+                    complaint_detail,
+                    response_detail,
+                    sla,
+                    ticket_position: 1,
+                    org_id,
+                    department_id,
+                    type_customer,
+                    priority_scale,
+                    source_information,
+                    user_create,
+                    date_create,
+                    user_closed: user_create,
+                    date_closed: date_create
+                }]);
+            store_ticket_detail({
+                ticket_number,
+                cust_name,
+                cust_email,
+                cust_telephone,
+                cust_address,
+            });
+            store_ticket_interactions({
+                ticket_number,
+                response_complaint: response_detail,
+                status,
+                channel: ticket_source,
+                user_create,
+                first_create: 'Yes',
+                dispatch_ticket: 'No',
+                dispatch_to_layer: '1',
+                interaction_type: 'Transaction'
+            });
+        }
+        else {
+            //? ticket status <> closed
+            await knex('tickets')
+                .insert([{
+                    customer_id,
+                    ticket_number,
+                    ticket_source,
+                    status,
+                    category_id,
+                    category_sublv1_id,
+                    category_sublv2_id,
+                    category_sublv3_id,
+                    complaint_detail,
+                    response_detail,
+                    sla,
+                    ticket_position: 1, //? val=2 if auto dispatch layer 2
+                    org_id,
+                    department_id,
+                    type_customer,
+                    priority_scale,
+                    source_information,
+                    user_create,
+                    date_create
+                }]);
+            store_ticket_detail({
+                ticket_number,
+                cust_name,
+                cust_email,
+                cust_telephone,
+                cust_address,
+            });
+
+            //? interaction layer 1
+            store_ticket_interactions({
+                ticket_number,
+                response_complaint: response_detail,
+                status,
+                channel: ticket_source,
+                user_create,
+                first_create: 'Yes',
+                dispatch_ticket: 'No',
+                dispatch_to_layer: '1',
+                interaction_type: 'Transaction'
+            });
+
+            //? interaction auto dispatch layer 2
+            /* store_ticket_interactions({
+                ticket_number,
+                response_complaint: 'Auto Dispatch To Layer 2',
+                status,
+                channel: ticket_source,
+                user_create,
+                first_create: 'No',
+                dispatch_ticket: 'Yes',
+                dispatch_to_layer: '2', //? auto dispatch layer 2
+                interaction_type: 'Escalation'
+            }); */
         }
 
-        await knex('tickets')
-            .insert([{
-                customer_id,
-                ticket_number,
-                ticket_source,
-                status,
-                category_id,
-                category_sublv1_id,
-                category_sublv2_id,
-                category_sublv3_id,
-                complaint_detail,
-                response_detail,
-                sla,
-                ticket_position: 1,
-                org_id,
-                department_id,
-                type_customer,
-                priority_scale,
-                source_information,
-                user_create,
-                date_create,
-                user_closed,
-                date_closed
-            }]);
-        store_ticket_detail({
+        response.ok(res, ticket_number);
+    }
+    catch (error) {
+        console.log(error);
+        logger('ticket/store', error);
+        res.status(500).end();
+    }
+}
+
+const update = async function (req, res) {
+
+}
+
+const ticket_escalations = async function (req, res) {
+    try {
+        if (req.method !== 'PUT') return res.status(405).end('Method not Allowed');
+        auth_jwt_bearer(req, res);
+        const {
             ticket_number,
-            cust_name,
-            cust_email,
-            cust_telephone,
-            cust_address,
-        });
+            status,
+            user_create,
+            ticket_source,
+            department_id,
+            ticket_position,
+            response_detail
+        } = req.body;
+
+
+        await knex('tickets')
+            .update({
+                department_id,
+                ticket_position,
+                response_detail
+            })
+            .where({ ticket_number });
+
         store_ticket_interactions({
             ticket_number,
             response_complaint: response_detail,
             status,
             channel: ticket_source,
             user_create,
-            first_create: user_create,
+            first_create: 'No',
+            dispatch_ticket: 'Yes',
+            dispatch_to_layer: ticket_position,
+            interaction_type: 'Escalation'
         });
+
         response.ok(res, ticket_number);
     }
     catch (error) {
         console.log(error);
-        logger('ticket/store', error);
+        logger('ticket/ticket_escalations', error);
         res.status(500).end();
     }
 }
@@ -158,6 +264,9 @@ const store_ticket_interactions = async function (req) {
             channel,
             user_create,
             first_create,
+            dispatch_ticket,
+            dispatch_to_layer,
+            interaction_type,
             created_at = knex.fn.now()
         } = req;
 
@@ -170,6 +279,9 @@ const store_ticket_interactions = async function (req) {
                 user_create,
                 created_at,
                 first_create,
+                dispatch_ticket,
+                dispatch_to_layer,
+                interaction_type,
             }]);
     }
     catch (error) {
@@ -184,7 +296,7 @@ const ticket_interactions = async function (req, res) {
         auth_jwt_bearer(req, res);
         const { ticket_number } = req.params;
         const data = await knex('ticket_interactions')
-            .select('id', 'ticket_number', 'response_complaint', 'channel', 'status', 'user_create', 'created_at', 'first_create')
+            .select('id', 'ticket_number', 'response_complaint', 'channel', 'status', 'user_create', 'created_at', 'first_create', 'dispatch_ticket', 'dispatch_to_layer', 'interaction_type')
             .where({ ticket_number }).orderBy('id', 'desc');
 
         for (let i = 0; i < data.length; i++) {
@@ -258,6 +370,25 @@ const history_transaction = async function (req, res) {
     }
 }
 
+/* const ticket_escalations = async function (req, res) {
+    try {
+        if (req.method !== 'GET') return res.status(405).end();
+        auth_jwt_bearer(req, res);
+        const { ticket_number } = req.params;
+        const tickets = await knex('view_tickets').where({ ticket_number }).andWhere('ticket_position', '>', '1').orderBy('id', 'desc');
+
+        for (let i = 0; i < tickets.length; i++) {
+            tickets[i].date_create = datetime(tickets[i].date_create)
+        }
+        response.ok(res, tickets);
+    }
+    catch (error) {
+        console.log(error);
+        logger('ticket/history_ticket', error);
+        res.status(500).end();
+    }
+} */
+
 const history_ticket = async function (req, res) {
     try {
         if (req.method !== 'POST') return res.status(405).end();
@@ -267,7 +398,7 @@ const history_ticket = async function (req, res) {
             .where('date_create', '>=', date_from)
             .andWhere('date_create', '<=', date_to)
             .orderBy('date_create', 'desc');
-            
+
         // const tickets = await knex.raw(`
         //     SELECT * FROM view_tickets 
         //     WHERE CONVERT(DATE, date_create) >= CONVERT(DATE, '${date_from}') AND CONVERT(DATE, date_create) <= CONVERT(DATE, '${date_to}')
@@ -291,9 +422,11 @@ module.exports = {
     index,
     show,
     store,
+    update,
     publish,
     data_publish,
     history_transaction,
     ticket_interactions,
+    ticket_escalations,
     history_ticket,
 }
