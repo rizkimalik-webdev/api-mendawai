@@ -101,6 +101,7 @@ module.exports = function (app) {
     app.prefix('/ticket',  function (api) {
         api.route('/').get(ticket.index);
         api.route('/store').post(ticket.store);
+        api.route('/update').put(ticket.update);
         api.route('/show/:ticket_number').get(ticket.show);
         api.route('/publish').post(ticket.publish);
         api.route('/publish/:customer_id').get(ticket.data_publish);
