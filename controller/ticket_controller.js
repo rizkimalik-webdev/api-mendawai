@@ -182,7 +182,65 @@ const store = async function (req, res) {
 }
 
 const update = async function (req, res) {
+    try {
+        if (req.method !== 'PUT') return res.status(405).end('Method not Allowed');
+        auth_jwt_bearer(req, res);
+        const {
+            customer_id,
+            ticket_number,
+            ticket_source,
+            status,
+            category_id,
+            category_sublv1_id,
+            category_sublv2_id,
+            category_sublv3_id,
+            complaint_detail,
+            response_detail,
+            sla,
+            org_id,
+            department_id,
+            type_customer,
+            priority_scale,
+            source_information,
+            user_create,
+            ticket_position
+        } = req.body;
 
+        let date_closed, user_closed;
+        if (status === 'Closed') {
+            user_closed = user_create;
+            date_closed = knex.fn.now();
+        }
+
+        await knex('tickets')
+            .update({
+                status,
+                response_detail,
+                department_id,
+                user_closed: user_closed,
+                date_closed: date_closed
+            })
+            .where({ ticket_number });
+
+        store_ticket_interactions({
+            ticket_number,
+            response_complaint: response_detail,
+            status,
+            channel: ticket_source,
+            user_create,
+            first_create: 'No',
+            dispatch_ticket: 'No',
+            dispatch_to_layer: ticket_position,
+            interaction_type: 'Transaction'
+        });
+
+        response.ok(res, ticket_number);
+    }
+    catch (error) {
+        console.log(error);
+        logger('ticket/update', error);
+        res.status(500).end();
+    }
 }
 
 const ticket_escalations = async function (req, res) {
