@@ -89,18 +89,15 @@ const store = async function (req, res) {
                     type_customer,
                     priority_scale,
                     source_information,
+                    cust_name,
+                    cust_email,
+                    cust_telephone,
+                    cust_address,
                     user_create,
                     date_create,
                     user_closed: user_create,
                     date_closed: date_create
                 }]);
-            store_ticket_detail({
-                ticket_number,
-                cust_name,
-                cust_email,
-                cust_telephone,
-                cust_address,
-            });
             store_ticket_interactions({
                 ticket_number,
                 response_complaint: response_detail,
@@ -134,16 +131,13 @@ const store = async function (req, res) {
                     type_customer,
                     priority_scale,
                     source_information,
+                    cust_name,
+                    cust_email,
+                    cust_telephone,
+                    cust_address,
                     user_create,
                     date_create
                 }]);
-            store_ticket_detail({
-                ticket_number,
-                cust_name,
-                cust_email,
-                cust_telephone,
-                cust_address,
-            });
 
             //? interaction layer 1
             store_ticket_interactions({

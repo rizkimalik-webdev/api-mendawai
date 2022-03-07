@@ -20,6 +20,11 @@ const up = function(knex) {
         table.string('type_customer', 50);
         table.string('priority_scale', 50);
         table.string('source_information', 50);
+        table.string('cust_name', 50);
+        table.string('cust_email', 100);
+        table.string('cust_telephone', 50);
+        table.text('cust_address');
+        table.string('thread_id', 50);
         table.string('user_create', 50);
         table.timestamp('date_create');
         table.string('user_closed', 50);
