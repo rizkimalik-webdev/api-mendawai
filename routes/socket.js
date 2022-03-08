@@ -10,15 +10,16 @@ module.exports = function (io) {
     io.use((socket, next) => {
         const { flag_to, username, email } = socket.handshake.auth;
         if (!username) {
-            const err = new Error("not authorized");  
+            const err = new Error("not authorized");
             next(err);
         }
-        
+
         socket.username = username;
         if (flag_to === 'customer' && email !== undefined) {
-            console.log(flag_to, username, email);
-            const customer = { username, email }
-            insert_customer_sosmed(customer)
+            insert_customer_sosmed({
+                name: username,
+                email: email
+            })
         }
         next();
     });
@@ -35,7 +36,7 @@ module.exports = function (io) {
 
         socket.on('send-message-customer', (content) => {
             socket.to(content.socket_agentid).emit('return-message-customer', content);
-            if(content.blending === true) return;
+            if (content.blending === true) return;
             insert_message_customer(content);
         });
 
@@ -55,7 +56,7 @@ module.exports = function (io) {
             }
             console.log(socket.rooms);
         });
-        
+
         socket.on('blending-chat', (content) => {
             socket.to(content.user_id).emit('return-blending-chat', content);
         });
