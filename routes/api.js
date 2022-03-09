@@ -8,6 +8,7 @@ const customer = require('../controller/customer_controller');
 const channel = require('../controller/customer_channel_controller');
 const socmed = require('../controller/sosmed_controller');
 const ticket = require('../controller/ticket_controller');
+const todolist = require('../controller/todolist_controller');
 const { facebook, twitter, instagram } = require('../controller/hooks');
 const { blending } = require('../controller/blending_controller');
 const master = require('../controller/master_data');
@@ -33,7 +34,6 @@ module.exports = function (app) {
         api.route('/user_socket').put(auth.user_socket);
     });
 
-    app.route('/mail').post(mail.send_mail);
 
     app.prefix('/master', function (api) {
         api.route('/status').get(master.status.index);
@@ -111,6 +111,11 @@ module.exports = function (app) {
         api.route('/history').post(ticket.history_ticket);
     });
 
+    app.prefix('/todolist', function (api) {
+        api.route('/total_ticket').post(todolist.total_ticket);
+        api.route('/data_ticket').post(todolist.data_ticket);
+    });
+    
     app.prefix('/sosmed', function (api) {
         api.route('/blending').post(blending);
         api.route('/list_customers').get(socmed.list_customers);
@@ -129,5 +134,7 @@ module.exports = function (app) {
         api.route('/twitter/directmessage').post(twitter.twitter_directmessage);
         api.route('/twitter/mention').post(twitter.twitter_mention);
     });
+
+    app.route('/mail').post(mail.send_mail);
 
 }

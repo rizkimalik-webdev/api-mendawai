@@ -251,7 +251,6 @@ const ticket_escalations = async function (req, res) {
             response_detail
         } = req.body;
 
-
         await knex('tickets')
             .update({
                 department_id,
