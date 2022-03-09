@@ -12,25 +12,17 @@ const total_ticket = async function (req, res) {
 
         let tickets;
         if (user_level === 'Layer1') {
-            tickets = await knex.raw(`
-                SELECT status, (select count(ticket_number) from tickets where status=status.status AND org_id='${organization_id}' AND user_create='${user_create}') as total FROM status
-            `);
+            tickets = await knex.raw(`SELECT status, (select count(ticket_number) FROM tickets where status=status.status AND org_id='${organization_id}' AND user_create='${user_create}') as total FROM status`);
         }
         else if (user_level === 'Layer2') {
-            tickets = await knex.raw(`
-                SELECT status, (select count(ticket_number) from tickets where status=status.status AND org_id='${organization_id}' AND ticket_position='2') as total FROM status
-            `);
+            tickets = await knex.raw(`SELECT status, (select count(ticket_number) FROM tickets where status=status.status AND org_id='${organization_id}' AND ticket_position='2') as total FROM status`);
         }
         else if (user_level === 'Layer3') {
-            tickets = await knex.raw(`
-                SELECT status, (select count(ticket_number) from tickets where status=status.status AND department_id='${department_id}' AND ticket_position='3') as total FROM status
-            `);
+            tickets = await knex.raw(`SELECT status, (select count(ticket_number) FROM tickets where status=status.status AND department_id='${department_id}' AND ticket_position='3') as total FROM status`);
         }
         else {
             //? user_level = admin
-            tickets = await knex.raw(`
-                SELECT status, (select count(ticket_number) from tickets where status=status.status AND org_id='${organization_id}') as total FROM status
-            `);
+            tickets = await knex.raw(`SELECT status, (select count(ticket_number) FROM tickets where status=status.status AND org_id='${organization_id}') as total FROM status`);
         }
 
         response.ok(res, tickets);
