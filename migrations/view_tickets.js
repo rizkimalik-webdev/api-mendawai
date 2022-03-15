@@ -1,6 +1,6 @@
 
 const up = function (knex) {
-    return knex.raw(`CREATE VIEW view_tickets AS (
+    return knex.raw(`CREATE VIEW view_tickets AS 
         SELECT
             a.*, 
             b.organization_name, 
@@ -17,7 +17,7 @@ const up = function (knex) {
             LEFT OUTER JOIN category_sub_lv2 as e ON e.category_sublv2_id=a.category_sublv2_id
             LEFT OUTER JOIN category_sub_lv3 as f ON f.category_sublv3_id=a.category_sublv3_id
             LEFT OUTER JOIN departments as h ON h.id=a.department_id
-    )`);
+    `);
 };
 
 const down = function (knex) {
