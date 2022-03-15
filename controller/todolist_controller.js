@@ -65,12 +65,7 @@ const data_ticket = async function (req, res) {
             tickets[i].date_create = date.format(tickets[i].date_create, 'YYYY-MM-DD HH:mm:SS', true)
         }
 
-        if (process.env.DB_CONNECTION === 'mysql') {
-            response.ok(res, tickets[0]);
-        }
-        else {
-            response.ok(res, tickets);
-        }
+        response.ok(res, tickets);
     }
     catch (error) {
         console.log(error);
