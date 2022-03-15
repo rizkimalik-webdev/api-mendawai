@@ -26,7 +26,12 @@ const total_ticket = async function (req, res) {
             tickets = await knex.raw(`SELECT status, (select count(ticket_number) FROM tickets where status=status.status AND org_id='${organization_id}') as total FROM status ORDER BY id ASC`);
         }
 
-        response.ok(res, tickets);
+        if (process.env.DB_CONNECTION === 'mysql') {
+            response.ok(res, tickets[0]);
+        }
+        else {
+            response.ok(res, tickets);
+        }
     }
     catch (error) {
         console.log(error);
@@ -60,7 +65,12 @@ const data_ticket = async function (req, res) {
             tickets[i].date_create = date.format(tickets[i].date_create, 'YYYY-MM-DD HH:mm:SS', true)
         }
 
-        response.ok(res, tickets);
+        if (process.env.DB_CONNECTION === 'mysql') {
+            response.ok(res, tickets[0]);
+        }
+        else {
+            response.ok(res, tickets);
+        }
     }
     catch (error) {
         console.log(error);

@@ -421,31 +421,12 @@ const history_transaction = async function (req, res) {
     }
 }
 
-/* const ticket_escalations = async function (req, res) {
-    try {
-        if (req.method !== 'GET') return res.status(405).end();
-        auth_jwt_bearer(req, res);
-        const { ticket_number } = req.params;
-        const tickets = await knex('view_tickets').where({ ticket_number }).andWhere('ticket_position', '>', '1').orderBy('id', 'desc');
-
-        for (let i = 0; i < tickets.length; i++) {
-            tickets[i].date_create = datetime(tickets[i].date_create)
-        }
-        response.ok(res, tickets);
-    }
-    catch (error) {
-        console.log(error);
-        logger('ticket/history_ticket', error);
-        res.status(500).end();
-    }
-} */
-
 const history_ticket = async function (req, res) {
     try {
         if (req.method !== 'POST') return res.status(405).end();
         auth_jwt_bearer(req, res);
         const { date_from, date_to } = req.body;
-       
+
         const tickets = await knex.raw(`
             SELECT * FROM view_tickets 
             WHERE CONVERT(DATE, date_create) >= CONVERT(DATE, '${date_from}') AND CONVERT(DATE, date_create) <= CONVERT(DATE, '${date_to}')
@@ -453,7 +434,7 @@ const history_ticket = async function (req, res) {
         `);
 
         for (let i = 0; i < tickets.length; i++) {
-            tickets[i].date_create = datetime(tickets[i].date_create)
+            tickets[i].date_create = date.format(tickets[i].date_create, 'YYYY-MM-DD HH:mm', true)
         }
         response.ok(res, tickets);
     }
