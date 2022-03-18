@@ -5,8 +5,6 @@ const { auth_jwt_bearer } = require('../middleware');
 const logger = require('../helper/logger');
 const response = require('../helper/json_response');
 const { insert_channel_customer } = require('./customer_channel_controller');
-const { datetime } = require('../helper/datetime_format');
-
 
 const index = async function (req, res) {
     try {
@@ -186,7 +184,7 @@ const customer_journey = async function (req, res) {
         // auth_jwt_bearer(req, res);
         const { customer_id } = req.params;
         const journey = await knex('view_tickets')
-            .select('ticket_number','ticket_source','status','sla','complaint_detail','response_detail','date_create','type_customer','priority_scale','source_information','user_create','organization_name','department_name','category_name','category_sublv1_name','category_sublv2_name','category_sublv3_name')
+            .select('ticket_number', 'ticket_source', 'status', 'sla', 'complaint_detail', 'response_detail', 'date_create', 'type_customer', 'priority_scale', 'source_information', 'user_create', 'organization_name', 'department_name', 'category_name', 'category_sublv1_name', 'category_sublv2_name', 'category_sublv3_name')
             .where({ customer_id }).orderBy('id', 'desc');
 
         for (let i = 0; i < journey.length; i++) {
@@ -204,6 +202,7 @@ const customer_journey = async function (req, res) {
 }
 
 module.exports = {
+    data_customers,
     index,
     show,
     store,
