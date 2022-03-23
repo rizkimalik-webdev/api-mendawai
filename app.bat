@@ -1,2 +1,2 @@
-cd D:\laragon\www\applications_nodejs\api-mendawai-cjs
+cd D:\laragon\www\applications_nodejs\api-mendawai
 yarn start
