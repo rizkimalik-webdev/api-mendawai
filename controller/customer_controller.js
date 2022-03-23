@@ -202,7 +202,6 @@ const customer_journey = async function (req, res) {
 }
 
 module.exports = {
-    data_customers,
     index,
     show,
     store,
