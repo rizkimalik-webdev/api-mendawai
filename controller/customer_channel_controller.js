@@ -8,7 +8,7 @@ const response = require('../helper/json_response');
 const index = async function (req, res) {
     try {
         if (req.method !== 'GET') return res.status(405).end();
-        // auth_jwt_bearer(req, res);
+        auth_jwt_bearer(req, res);
         const channels = await knex.select(
             'customer_channels.id',
             'customer_channels.customer_id',
