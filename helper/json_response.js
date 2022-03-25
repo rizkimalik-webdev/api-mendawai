@@ -1,3 +1,5 @@
+const logger = require('./logger');
+
 const ok = function (res, data) {
     let values = {
         'status': 200,
@@ -19,12 +21,16 @@ const created = function (res, data) {
 }
 
 const error = function (res, data) {
+    console.log(data);
+    logger(path, data);
+
     let values = {
         'status': 400,
         'message': 'error',
         'data': data
     }
     res.json(values);
+    res.status(500);
     res.end();
 }
 

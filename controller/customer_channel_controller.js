@@ -8,16 +8,17 @@ const response = require('../helper/json_response');
 const index = async function (req, res) {
     try {
         if (req.method !== 'GET') return res.status(405).end();
-        auth_jwt_bearer(req, res);
-        const channels = await knex('customer_channels')
-            .select('id','customer_id', 'flag_channel', 'value_channel')
-            .orderBy('customer_id');
-        for (let i = 0; i < channels.length; i++) {
-            const { name } = await knex('customers').select('name')
-                .where({ customer_id: channels[i].customer_id })
-                .first();
-            channels[i].name = name;
-        }
+        // auth_jwt_bearer(req, res);
+        const channels = await knex.select(
+            'customer_channels.id',
+            'customer_channels.customer_id',
+            'customer_channels.flag_channel',
+            'customer_channels.value_channel',
+            'customers.name',
+        )
+            .from('customer_channels')
+            .leftOuterJoin('customers', 'customer_channels.customer_id', 'customers.customer_id')
+            .orderBy('customer_channels.customer_id');
         response.ok(res, channels);
     }
     catch (error) {
@@ -57,7 +58,19 @@ const insert_channel_customer = async function (req) {
     }
 }
 
+const destroy_channel = async function (req, res) {
+    try {
+        const { customer_id } = req;
+        await knex('customer_channels').where({ customer_id }).del();
+    }
+    catch (error) {
+        console.log(error);
+        logger('customer_channel/destroy', error);
+    }
+}
+
 module.exports = {
     index,
     insert_channel_customer,
+    destroy_channel,
 }
