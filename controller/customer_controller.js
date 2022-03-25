@@ -4,7 +4,7 @@ const date = require('date-and-time');
 const { auth_jwt_bearer } = require('../middleware');
 const logger = require('../helper/logger');
 const response = require('../helper/json_response');
-const { insert_channel_customer } = require('./customer_channel_controller');
+const { insert_channel_customer, destroy_channel } = require('./customer_channel_controller');
 
 const index = async function (req, res) {
     try {
@@ -144,6 +144,7 @@ const destroy = async function (req, res) {
         auth_jwt_bearer(req, res);
         const { customer_id } = req.params;
         const delData = await knex('customers').where({ customer_id }).del();
+        destroy_channel({ customer_id })
         response.ok(res, delData);
     }
     catch (error) {
