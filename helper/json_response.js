@@ -20,7 +20,7 @@ const created = function (res, data) {
     res.end();
 }
 
-const error = function (res, data) {
+const error = function (res, data, path) {
     console.log(data);
     logger(path, data);
 
@@ -34,4 +34,8 @@ const error = function (res, data) {
     res.end();
 }
 
-module.exports = { ok, created, error };
+const query = function (path, obj) {
+    logger(path, `\n-query: ${obj.sql} \n-param: ${obj.bindings}`);
+}
+
+module.exports = { ok, created, error, query };

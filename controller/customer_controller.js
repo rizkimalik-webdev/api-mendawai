@@ -22,7 +22,10 @@ const show = async function (req, res) {
         if (req.method !== 'GET') return res.status(405).end('Method not Allowed');
         auth_jwt_bearer(req, res);
         const { customer_id } = req.params;
-        const res_customer = await knex('customers').where({ customer_id });
+        const res_customer = await knex('customers').where({ customer_id })
+            .on('query-response', (res, obj, build) => {
+                response.query('customer/show', obj);
+            });
         response.ok(res, res_customer);
     }
     catch (error) {
