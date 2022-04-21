@@ -1,5 +1,6 @@
 'use strict';
 // const { auth_jwt } = require('../middleware');
+const upload = require('../controller/upload_controller');
 const mail = require('../controller/mail_controller');
 const auth = require('../controller/auth_controller');
 const menu = require('../controller/menu_controller');
@@ -136,5 +137,6 @@ module.exports = function (app) {
     });
 
     app.route('/mail').post(mail.send_mail);
+    app.route('/upload').post(upload.upload);
 
 }

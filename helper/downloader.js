@@ -2,7 +2,7 @@ const Downloader = require('nodejs-file-downloader');
 const logger = require('./logger');
 
 const downloader = async (url, folder, filename) => {
-    const media = `./media/${folder}`;
+    const media = `./${process.env.DIR_ATTACHMENT}/${folder}`;
     function onResponse(response) {
         if (response.headers['content-length'] > 1000000) {
             console.log('File is too big!')

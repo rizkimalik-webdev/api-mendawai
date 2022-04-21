@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 // const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const fileUpload = require('express-fileupload');
 const port = process.env.PORT || 3001;
 
 dotenv.config();
@@ -38,6 +39,8 @@ const io = require('socket.io')(server, {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
+app.use(fileUpload());
+app.use(express.static(`./${process.env.DIR_ATTACHMENT}`));
 
 // app.use(cookieParser());
 // app.use(cors({
