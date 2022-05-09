@@ -1,15 +1,16 @@
 var Service = require('node-windows').Service;
+require('dotenv').config();
 
 // Create a new service object
 var svc = new Service({
-    name:'api_mendawai',
+    name: process.env.APP_NAME,
     description: 'Api web server.',
-    script: 'D:\\laragon\\www\\applications_nodejs\\api-mendawai-cjs\\app.js'
+    script: require('path').join(__dirname, 'app.js')
 });
 
 // Listen for the "install" event, which indicates the
 // process is available as a service.
-svc.on('install',function(){
+svc.on('install', function () {
     svc.start();
 });
 
