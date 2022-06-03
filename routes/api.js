@@ -1,5 +1,6 @@
 'use strict';
 // const { auth_jwt } = require('../middleware');
+const upload = require('../controller/upload_controller');
 const mail = require('../controller/mail_controller');
 const auth = require('../controller/auth_controller');
 const menu = require('../controller/menu_controller');
@@ -18,7 +19,7 @@ module.exports = function (app) {
         res.json({ message: "Application Mendawai API running! 🤘🚀" });
         res.end();
     });
-    app.route('/main_menu').get(menu.main_menu);
+    app.route('/main_menu/:user_level').get(menu.main_menu);
     app.route('/menu').get(menu.menu);
     app.route('/menu_modul/:menu_id').get(menu.menu_modul);
     app.route('/menu_submodul/:menu_modul_id').get(menu.menu_submodul);
@@ -136,5 +137,6 @@ module.exports = function (app) {
     });
 
     app.route('/mail').post(mail.send_mail);
+    app.route('/upload').post(upload.upload);
 
 }

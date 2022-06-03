@@ -2,7 +2,6 @@
 const knex = require('../config/db_connect');
 const date = require('date-and-time');
 const { auth_jwt_bearer } = require('../middleware');
-const logger = require('../helper/logger');
 const response = require('../helper/json_response');
 const { insert_channel_customer, destroy_channel } = require('./customer_channel_controller');
 
@@ -14,9 +13,7 @@ const index = async function (req, res) {
         response.ok(res, customers);
     }
     catch (error) {
-        console.log(error);
-        logger('customer/index', error);
-        res.status(500).end();
+        response.error(res, error, 'customer/index');
     }
 }
 
@@ -25,13 +22,14 @@ const show = async function (req, res) {
         if (req.method !== 'GET') return res.status(405).end('Method not Allowed');
         auth_jwt_bearer(req, res);
         const { customer_id } = req.params;
-        const res_customer = await knex('customers').where({ customer_id });
+        const res_customer = await knex('customers').where({ customer_id })
+            .on('query-response', (res, obj, build) => {
+                response.query('customer/show', obj);
+            });
         response.ok(res, res_customer);
     }
     catch (error) {
-        console.log(error);
-        logger('customer/show', error);
-        res.status(500).end();
+        response.error(res, error, 'customer/show');
     }
 }
 
@@ -82,9 +80,7 @@ const store = async function (req, res) {
         }
     }
     catch (error) {
-        console.log(error);
-        logger('customer/store', error);
-        res.status(500).end();
+        response.error(res, error, 'customer/store');
     }
 }
 
@@ -131,9 +127,7 @@ const update = async function (req, res) {
         }
     }
     catch (error) {
-        console.log(error);
-        logger('customer/update', error);
-        res.status(500).end();
+        response.error(res, error, 'customer/update');
     }
 }
 
@@ -148,9 +142,7 @@ const destroy = async function (req, res) {
         response.ok(res, delData);
     }
     catch (error) {
-        console.log(error);
-        logger('customer/destroy', error);
-        res.status(500).end();
+        response.error(res, error, 'customer/destroy');
     }
 }
 
@@ -174,8 +166,7 @@ const insert_customer_sosmed = async function (req) {
         }
     }
     catch (error) {
-        console.log(error);
-        logger('customer/insert_customer', error);
+        response.error(res, error, 'customer/insert_customer_sosmed');
     }
 }
 
@@ -196,9 +187,7 @@ const customer_journey = async function (req, res) {
         response.ok(res, journey);
     }
     catch (error) {
-        console.log(error);
-        logger('customer/customer_journey', error);
-        res.status(500).end();
+        response.error(res, error, 'customer/customer_journey');
     }
 }
 
