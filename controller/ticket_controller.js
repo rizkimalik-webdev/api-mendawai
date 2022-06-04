@@ -428,15 +428,22 @@ const history_ticket = async function (req, res) {
         const { date_from, date_to } = req.body;
 
         const tickets = await knex.raw(`
-            SELECT * FROM view_tickets 
-            WHERE CONVERT(DATE, date_create) >= CONVERT(DATE, '${date_from}') AND CONVERT(DATE, date_create) <= CONVERT(DATE, '${date_to}')
+            SELECT *, DATE_FORMAT(date_create,'%Y-%m-%d %H:%i:%s') AS date_create FROM view_tickets 
+            WHERE DATE_FORMAT(date_create,'%Y-%m-%d') >= '${date_from}' AND DATE_FORMAT(date_create,'%Y-%m-%d') <= '${date_to}'
             ORDER BY date_create DESC
         `);
+        
+        //sqlsv query
+        // const tickets = await knex.raw(`
+        //     SELECT * FROM view_tickets 
+        //     WHERE CONVERT(DATE, date_create) >= CONVERT(DATE, '${date_from}') AND CONVERT(DATE, date_create) <= CONVERT(DATE, '${date_to}')
+        //     ORDER BY date_create DESC
+        // `);
 
-        for (let i = 0; i < tickets.length; i++) {
-            tickets[i].date_create = date.format(tickets[i].date_create, 'YYYY-MM-DD HH:mm', true)
-        }
-        response.ok(res, tickets);
+        // for (let i = 0; i < tickets.length; i++) {
+        //     tickets[i].date_create = date.format(tickets[i].date_create, 'YYYY-MM-DD HH:mm', true)
+        // }
+        response.ok(res, tickets[0]);
     }
     catch (error) {
         console.log(error);
