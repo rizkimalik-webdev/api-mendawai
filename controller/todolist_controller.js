@@ -48,24 +48,24 @@ const data_ticket = async function (req, res) {
 
         let tickets;
         if (user_level === 'Layer1') {
-            tickets = await knex.raw(`SELECT * FROM view_tickets WHERE status='${status}' AND org_id='${organization_id}' AND user_create='${user_create}'`);
+            tickets = await knex.raw(`SELECT *, DATE_FORMAT(date_create,'%Y-%m-%d %H:%i:%s') AS date_create FROM view_tickets WHERE status='${status}' AND org_id='${organization_id}' AND user_create='${user_create}'`);
         }
         else if (user_level === 'Layer2') {
-            tickets = await knex.raw(`SELECT * FROM view_tickets WHERE status='${status}' AND org_id='${organization_id}' AND ticket_position='2'`);
+            tickets = await knex.raw(`SELECT *, DATE_FORMAT(date_create,'%Y-%m-%d %H:%i:%s') AS date_create FROM view_tickets WHERE status='${status}' AND org_id='${organization_id}' AND ticket_position='2'`);
         }
         else if (user_level === 'Layer3') {
-            tickets = await knex.raw(`SELECT * FROM view_tickets WHERE status='${status}' AND department_id='${department_id}' AND ticket_position='3'`);
+            tickets = await knex.raw(`SELECT *, DATE_FORMAT(date_create,'%Y-%m-%d %H:%i:%s') AS date_create FROM view_tickets WHERE status='${status}' AND department_id='${department_id}' AND ticket_position='3'`);
         }
         else {
             //? user_level = admin
-            tickets = await knex.raw(`SELECT * FROM view_tickets WHERE status='${status}' AND org_id='${organization_id}'`);
+            tickets = await knex.raw(`SELECT *, DATE_FORMAT(date_create,'%Y-%m-%d %H:%i:%s') AS date_create FROM view_tickets WHERE status='${status}' AND org_id='${organization_id}'`);
         }
 
-        for (let i = 0; i < tickets.length; i++) {
-            tickets[i].date_create = date.format(tickets[i].date_create, 'YYYY-MM-DD HH:mm:SS', true)
-        }
+        // for (let i = 0; i < tickets.length; i++) {
+        //     tickets[i].date_create = date.format(tickets[i].date_create, 'YYYY-MM-DD HH:mm:SS', true)
+        // }
 
-        response.ok(res, tickets);
+        response.ok(res, tickets[0]);
     }
     catch (error) {
         console.log(error);
