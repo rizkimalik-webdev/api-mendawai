@@ -14,7 +14,7 @@ exports.seed = function (knex) {
                     menu_id: 1,
                     menu_modul_name: "Sosial Media",
                     number: 0,
-                    path: '/dash/sosmed',
+                    path: '/dash/socmed',
                     icon: null,
                     is_root: false
                 },{
@@ -108,9 +108,9 @@ exports.seed = function (knex) {
                 /* modul channels */
                 { 
                     menu_id: 5,
-                    menu_modul_name: "Inbound",
+                    menu_modul_name: "Voice",
                     number: 0,
-                    path: '/channel/inbound',
+                    path: '/channel/voice',
                     icon: null,
                     is_root: false
                 },{ 
