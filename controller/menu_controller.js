@@ -18,6 +18,7 @@ const main_menu = async function (req, res) {
             .where('menu_access.menu_id', menu_access[i].menu_id)
             .andWhere('menu_access.access', 'modul')
             .andWhere('menu_access.user_level', user_level)
+            .orderBy('menu_access.menu_modul_id', 'ASC');
 
         menu_access[i].menu_modul = menu_modul;
     }

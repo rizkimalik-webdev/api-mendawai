@@ -12,11 +12,11 @@ exports.login = async function (req, res) {
 
         //?check username
         const user = await knex('users').where({ username }).first();
-        if (!user) return res.status(403).json({ error: 'invalid password', value: 'username', message: 'Username not found' });
+        if (!user) return response.forbidden(res, { value: 'username', message: 'Username not found' }, 'auth/login');
 
         //?check password
         const checkPassword = await bcrypt.compare(password, user.password)
-        if (!checkPassword) return res.status(403).json({ error: 'invalid password', value: 'password', message: 'Password not match' });
+        if (!checkPassword) return response.forbidden(res, { value: 'password', message: 'Password not match' }, 'auth/login');
 
         //?login update
         await knex('users').update({ login: 1 }).where({ username });
@@ -40,9 +40,7 @@ exports.login = async function (req, res) {
         response.ok(res, user);
     }
     catch (error) {
-        console.log(error);
-        logger('auth/login', error);
-        res.status(500).end();
+        response.error(res, error, 'auth/login')
     }
 }
 
@@ -56,9 +54,8 @@ exports.logout = async function (req, res) {
         response.ok(res, { message: 'logout success' });
     }
     catch (error) {
-        console.log(error);
-        logger('auth/logout', error);
-        res.status(500).end();
+        response.error(res, error, 'auth/logout')
+
     }
 }
 
@@ -73,8 +70,6 @@ exports.user_socket = async function (req, res) {
         response.ok(res, 'success update socket.');
     }
     catch (error) {
-        console.log(error);
-        logger('user/user_socket', error);
-        res.status(500).end();
+        response.error(res, error, 'auth/user_socket')
     }
 }
