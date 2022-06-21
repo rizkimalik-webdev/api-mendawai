@@ -29,8 +29,22 @@ const error = function (res, data, path) {
         'message': 'error',
         'data': data
     }
-    res.json(values);
     res.status(500);
+    res.json(values);
+    res.end();
+}
+
+const forbidden = function (res, data, path) {
+    console.log(data);
+    logger(path, data);
+
+    let values = {
+        'status': 403,
+        'message': 'Forbidden',
+        'data': data
+    }
+    // res.status(403);
+    res.json(values);
     res.end();
 }
 
@@ -38,4 +52,4 @@ const query = function (path, obj) {
     logger(path, `\n-query: ${obj.sql} \n-param: ${obj.bindings}`);
 }
 
-module.exports = { ok, created, error, query };
+module.exports = { ok, created, error, forbidden, query };
