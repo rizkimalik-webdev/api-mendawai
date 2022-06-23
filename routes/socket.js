@@ -12,6 +12,7 @@ module.exports = function (io) {
         if (!username) {
             const err = new Error("not authorized");
             next(err);
+            console.log(`⛔[${flag_to}]${username} - ${email} : ID ${socket.id}, not authorized`);
         }
 
         socket.username = username;
@@ -22,11 +23,12 @@ module.exports = function (io) {
             })
         }
         next();
+        console.log(`✅[${flag_to}]${username} - ${email} : ID ${socket.id}, auth success`);
     });
 
     io.on('connection', (socket) => {
         let users = {}
-        users[socket.id] = socket;
+        users[socket.id] = socket.id;
 
         socket.on('send-message-agent', (content) => {
             // console.log(`message-agent : ` + JSON.stringify(content));
@@ -46,7 +48,7 @@ module.exports = function (io) {
                 join_chat(content).then((val) => {
                     // socket.join(val.chat_id);
                     socket.to(val.user_id).emit('return-join-chat', val);
-                    console.log(`🚀 ${val.email}, join chat: ${val.chat_id}`);
+                    console.log(`${val.email}, join chat: ${val.chat_id}`);
                 });
             }
             else {
@@ -63,8 +65,9 @@ module.exports = function (io) {
 
 
         socket.on('disconnect', (res) => {
+            const { username, flag_to, email } = socket.handshake.auth;
             delete users[socket.id];
-            console.log(`📴 ${socket.id} - ${res} ⛔`);
+            console.log(`⛔[${flag_to}]${username} - ${email} : ID ${socket.id}, ${res} `);
         });
     });
 
