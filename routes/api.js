@@ -118,6 +118,7 @@ module.exports = function (app) {
     });
     
     app.prefix('/sosmed', function (api) {
+        api.route('/join_chat').post(socmed.join_chat);
         api.route('/blending').post(blending);
         api.route('/list_customers').get(socmed.list_customers);
         api.route('/conversation_chats').post(socmed.conversation_chats);

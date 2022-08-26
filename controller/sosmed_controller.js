@@ -4,131 +4,27 @@ const date = require('date-and-time');
 const logger = require('../helper/logger');
 const response = require('../helper/json_response');
 
-
-const join_chat = async function (req) {
+//? HTTP FUNCTION
+const join_chat = async function (req, res) {
     try {
-        const { user_id, username, email } = req;
-        const now = new Date();
-        const chatid = date.format(now, 'YYYYMMDDHHmmSSSmmSSS');
-        const { customer_id } = await knex('customers').where({ email }).first();
-        const chat = await knex('chats')
-            .select('chat_id')
-            .where({
-                email: email,
-                flag_to: 'customer',
-                flag_end: 'N'
-            });
-        const chat_id = chat.length === 0 ? chatid : chat.chat_id;
-        if (chat.length === 0) {
-            await knex('chats')
-                .insert([{
-                    chat_id: chat_id,
-                    message: 'join chat',
-                    user_id: user_id,
-                    name: username,
-                    email: email,
-                    channel: 'Chat',
-                    customer_id: customer_id,
-                    flag_to: 'customer',
-                    status_chat: 'waiting',
-                    flag_end: 'N',
-                    date_create: knex.fn.now()
-                }]);
+        const data = req.body;
+
+        if (data.email && data.flag_to === 'customer') {
+            const result = await customer_join(data);
+            response.ok(res, result);
+        }
+        else if (data.username && data.flag_to === 'Layer1') {
+            const result = await agent_join(data);
+            response.ok(res, result);
+        }
+        else {
+            response.error(res, 'error', 'sosmed/join_chat');
         }
 
-        await knex('chats').where({ email }).update({ user_id });
-        const result = await knex('chats').where({ customer_id }).first();
-
-        return result;
     }
     catch (error) {
         console.log(error);
         logger('sosmed/join_chat', error);
-    }
-}
-
-const insert_message_customer = async function (req) {
-    try {
-        const {
-            chat_id,
-            customer_id,
-            user_id,
-            name,
-            email,
-            message,
-            agent_handle
-        } = req;
-
-        const { date_assign } = await knex('chats').select('date_assign').where({ email }).first();
-        await knex('chats').where({ email, flag_to: 'customer' }).whereNot({ user_id }).update({ user_id });
-
-        await knex('chats')
-            .insert([{
-                chat_id,
-                customer_id,
-                user_id,
-                name,
-                email,
-                message,
-                agent_handle,
-                channel: 'Chat',
-                flag_to: 'customer',
-                status_chat: 'open_chat',
-                flag_end: 'N',
-                date_create: knex.fn.now(),
-                date_assign: date_assign,
-                // page_id: '',
-                // post_id: '',
-                // comment_id: '',
-                // reply_id: ''
-            }]);
-
-    }
-    catch (error) {
-        console.log(error);
-        logger('sosmed/insert_message_customer', error);
-    }
-}
-
-const insert_message_agent = async function (req) {
-    try {
-        const {
-            chat_id,
-            customer_id,
-            user_id,
-            name,
-            email,
-            message,
-            agent_handle
-        } = req;
-
-        const { date_assign } = await knex('chats').select('date_assign').where({ chat_id, customer_id }).first();
-
-        await knex('chats')
-            .insert([{
-                chat_id,
-                customer_id,
-                user_id,
-                name,
-                email,
-                message,
-                agent_handle,
-                channel: 'Chat',
-                flag_to: 'agent',
-                status_chat: 'open_chat',
-                flag_end: 'N',
-                date_create: knex.fn.now(),
-                date_assign: date_assign,
-                // page_id: '',
-                // post_id: '',
-                // comment_id: '',
-                // reply_id: ''
-            }]);
-
-    }
-    catch (error) {
-        console.log(error);
-        logger('sosmed/insert_message_agent', error);
     }
 }
 
@@ -170,11 +66,145 @@ const end_chat = async function (req, res) {
     response.ok(res, res_endchat);
 }
 
+
+//? NON HTTP FUNCTION
+const customer_join = async function (data) {
+    const now = new Date();
+    const generate_chatid = date.format(now, 'YYYYMMDDHHmmSSSmmSSS');
+    const generate_customerid = date.format(now, 'YYMMDDHHmmSS');
+
+    const customer = await knex('customers').select('customer_id').where({ email: data.email }).first();
+    const customer_id = customer ? customer.customer_id : generate_customerid;
+
+    if (!customer) {
+        await knex('customers')
+            .insert([{
+                customer_id: customer_id,
+                name: data.username,
+                email: data.email,
+                uuid: data.uuid,
+                source: 'Chat',
+                status: 'Initialize',
+                created_at: knex.fn.now()
+            }]);
+    }
+    else {
+        await knex('customers').update({ uuid: data.uuid }).where({ email: data.email });
+    }
+
+    const chat = await knex('chats').select('chat_id')
+        .where({
+            email: data.email,
+            flag_to: 'customer',
+            status_chat: 'waiting',
+            flag_end: 'N',
+            channel: 'Chat',
+        }).first();
+
+    const chat_id = chat ? chat.chat_id : generate_chatid;
+    if (!chat) {
+        await knex('chats')
+            .insert([{
+                chat_id: chat_id,
+                message: 'Joined Chat',
+                name: data.username,
+                email: data.email,
+                channel: 'Chat',
+                customer_id: customer_id,
+                flag_to: 'customer',
+                status_chat: 'waiting',
+                flag_end: 'N',
+                date_create: knex.fn.now()
+            }]);
+    }
+
+    const result = await knex('chats').where({ customer_id }).first();
+    return result;
+}
+
+const agent_join = async function (data) {
+    const user = await knex('users').select('username').where({ username: data.username }).first();
+
+    if (user) {
+        await knex('users')
+            .update({ uuid: data.uuid, login:'1' })
+            .where({ username: data.username, user_level: 'Layer1' });
+    }
+
+    return user;
+}
+
+const send_message_customer = async function (req) {
+    try {
+        const {
+            chat_id,
+            customer_id,
+            name,
+            email,
+            message,
+            agent_handle
+        } = req;
+
+        await knex('chats')
+            .insert([{
+                chat_id,
+                customer_id,
+                name,
+                email,
+                message,
+                agent_handle,
+                channel: 'Chat',
+                flag_to: 'customer',
+                status_chat: 'open',
+                flag_end: 'N',
+                date_create: knex.fn.now()
+            }]);
+
+    }
+    catch (error) {
+        console.log(error);
+        logger('sosmed/send_message_customer', error);
+    }
+}
+
+const send_message_agent = async function (req) {
+    try {
+        const {
+            chat_id,
+            customer_id,
+            name,
+            email,
+            message,
+            agent_handle
+        } = req;
+
+        await knex('chats')
+            .insert([{
+                chat_id,
+                customer_id,
+                name,
+                email,
+                message,
+                agent_handle,
+                channel: 'Chat',
+                flag_to: 'agent',
+                status_chat: 'open',
+                flag_end: 'N',
+                date_create: knex.fn.now()
+            }]);
+
+    }
+    catch (error) {
+        console.log(error);
+        logger('sosmed/send_message_agent', error);
+    }
+}
+
 module.exports = {
     list_customers,
     join_chat,
-    insert_message_customer,
-    insert_message_agent,
+    send_message_customer,
+    send_message_agent,
     conversation_chats,
     end_chat,
 }
