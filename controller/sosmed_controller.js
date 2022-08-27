@@ -83,13 +83,14 @@ const customer_join = async function (data) {
                 name: data.username,
                 email: data.email,
                 uuid: data.uuid,
+                connected: data.connected,
                 source: 'Chat',
                 status: 'Initialize',
                 created_at: knex.fn.now()
             }]);
     }
     else {
-        await knex('customers').update({ uuid: data.uuid }).where({ email: data.email });
+        await knex('customers').update({ uuid: data.uuid, connected: data.connected }).where({ email: data.email });
     }
 
     const chat = await knex('chats').select('chat_id')
@@ -118,7 +119,23 @@ const customer_join = async function (data) {
             }]);
     }
 
-    const result = await knex('chats').where({ customer_id }).first();
+    // get result data & send
+    const result = await knex('chats')
+        .where({
+            email: data.email,
+            flag_to: 'customer',
+            status_chat: 'waiting',
+            flag_end: 'N',
+            channel: 'Chat',
+        }).first();
+
+    if (result) {
+        const user = await knex('users').select('uuid').where({ username: result.agent_handle }).first();
+        const cust = await knex('customers').select('uuid').where({ email: data.email }).first();
+        result.uuid_agent = user.uuid;
+        result.uuid_customer = cust.uuid;
+    }
+
     return result;
 }
 
@@ -127,7 +144,7 @@ const agent_join = async function (data) {
 
     if (user) {
         await knex('users')
-            .update({ uuid: data.uuid, login:'1' })
+            .update({ uuid: data.uuid, connected: data.connected, login: '1' })
             .where({ username: data.username, user_level: 'Layer1' });
     }
 
@@ -200,6 +217,19 @@ const send_message_agent = async function (req) {
     }
 }
 
+const update_socket = async function (data) {
+    if (data.flag_to === 'customer') {
+        await knex('customers')
+            .update({ uuid: data.uuid, connected: data.connected })
+            .where({ email: data.email });
+    }
+    else {
+        await knex('users')
+            .update({ uuid: data.uuid, connected: data.connected })
+            .where({ username: data.username, user_level: 'Layer1' });
+    }
+}
+
 module.exports = {
     list_customers,
     join_chat,
@@ -207,4 +237,5 @@ module.exports = {
     send_message_agent,
     conversation_chats,
     end_chat,
+    update_socket,
 }
