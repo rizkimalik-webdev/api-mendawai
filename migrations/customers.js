@@ -16,6 +16,8 @@ const up = function(knex) {
         table.string('region', 50);
         table.string('status', 50);
         table.string('source', 100);
+        table.string('uuid', 100);
+        table.boolean('connected');
         table.timestamps();
     })
 };
