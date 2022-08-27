@@ -15,8 +15,10 @@ module.exports = function (io) {
         // }
         // else {
         socket.username = username;
+        socket.flag_to = flag_to;
+        socket.email = email;
         next();
-        console.log(`✅[${flag_to}]${username} - ${email} : ID ${socket.id}, auth success`);
+        console.log(`✅[${flag_to}] ${username} - ${email} : ID ${socket.id}, auth success`);
         // }
     });
 
@@ -47,8 +49,9 @@ module.exports = function (io) {
 
 
         socket.on('queing', (data) => {
-            // if (data.flag_to === 'customer') {
             socket.to(data.uuid_customer).emit('return-queing', data);
+            // if (data.flag_to === 'customer') {
+            // socket.to(data.uuid_customer).emit('return-queing', data);
             // } else {
             //     socket.to(data.uuid_agent).emit('return-queing', data);
             // }
@@ -76,10 +79,11 @@ module.exports = function (io) {
 
         socket.on('disconnect', (res) => {
             const { username, flag_to, email } = socket.handshake.auth;
-            update_socket({ username, flag_to, email, uuid: socket.id, connected: socket.connected });
-
+            if (flag_to !== 'blending') {
+                update_socket({ username, flag_to, email, uuid: socket.id, connected: socket.connected });
+            }
             delete users[socket.id];
-            console.log(`⛔[${flag_to}]${username} - ${email} : ID ${socket.id}, connected:${socket.connected}, ${res} `);
+            console.log(`⛔[${flag_to}] ${username} - ${email} : ID ${socket.id}, connected:${socket.connected}, ${res} `);
         });
     });
 

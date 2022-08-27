@@ -124,7 +124,7 @@ const customer_join = async function (data) {
         .where({
             email: data.email,
             flag_to: 'customer',
-            status_chat: 'waiting',
+            status_chat: 'open',
             flag_end: 'N',
             channel: 'Chat',
         }).first();
