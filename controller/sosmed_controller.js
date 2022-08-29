@@ -13,7 +13,7 @@ const join_chat = async function (req, res) {
             const result = await customer_join(data);
             response.ok(res, result);
         }
-        else if (data.username && data.flag_to === 'Layer1') {
+        else if (data.username && data.flag_to === 'agent') {
             const result = await agent_join(data);
             response.ok(res, result);
         }
@@ -29,41 +29,57 @@ const join_chat = async function (req, res) {
 }
 
 const list_customers = async function (req, res) {
-    const res_list_customers = await knex('chats')
-        .select('chat_id', 'user_id', 'customer_id', 'name', 'email', 'flag_to', 'channel', 'page_id', 'post_id', 'comment_id', 'reply_id')
-        .groupBy('chat_id', 'user_id', 'customer_id', 'name', 'email', 'flag_to', 'channel', 'page_id', 'post_id', 'comment_id', 'reply_id')
-        .where({ flag_to: 'customer', flag_end: 'N' })
+    const { agent } = req.query;
 
-    for (let i = 0; i < res_list_customers.length; i++) {
-        const { date_create } = await knex('chats').select('date_create').where({ flag_to: 'customer', flag_end: 'N', chat_id: res_list_customers[i].chat_id }).orderBy('id', 'desc').first();
-        res_list_customers[i].date_create = date_create.toISOString().replace(/T/, ' ').replace(/\..+/, '');
-        // res_list_customers[i].date_create = date.format(date_create, 'hh:mm DD MMM YYYY');
-    }
+    const list_customers = await knex.raw(`
+        SELECT a.chat_id,a.customer_id,b.name,a.email,a.agent_handle,b.uuid as uuid_customer,b.connected, c.uuid as uuid_agent,
+        (select count(*) from chats WHERE flag_to='customer' AND chat_id=a.chat_id and flag_notif is null) as total_chat 
+        FROM chats a
+        LEFT JOIN customers b ON a.email=b.email
+        LEFT JOIN users c ON a.agent_handle=c.username
+        WHERE a.flag_end='N' AND a.flag_to='customer' AND a.agent_handle='${agent}' 
+        GROUP BY a.chat_id,a.customer_id,b.name,a.email,a.agent_handle,b.uuid,b.connected,c.uuid
+        -- ORDER BY b.connected DESC
+    `); //query with mysql
 
-    response.ok(res, res_list_customers.reverse());
+    response.ok(res, list_customers[0]);
 }
 
 const conversation_chats = async function (req, res) {
-    const { chat_id } = req.body;
-    const res_conversations = await knex('chats')
-        .where({ chat_id, flag_end: 'N' })
-        .orderBy('id', 'asc')
+    try {
+        const { chat_id, customer_id } = req.body;
+        const conversations = await knex('chats')
+            .select('chat_id', 'customer_id', 'name', 'email', 'flag_to', 'message', 'date_create', 'channel', 'flag_notif')
+            .where({ chat_id, customer_id, flag_end: 'N' })
+            .orderBy('id', 'asc')
 
-    for (let i = 0; i < res_conversations.length; i++) {
-        res_conversations[i].date_create = res_conversations[i].date_create.toISOString().replace(/T/, ' ').replace(/\..+/, '');
-        // res_conversations[i].date_create = date.format(res_conversations[i].date_create, 'YYYY-MM-DD HH:mm:ss')
+        for (let i = 0; i < conversations.length; i++) {
+            conversations[i].date_create = conversations[i].date_create.toISOString().replace(/T/, ' ').replace(/\..+/, '');
+            // conversations[i].date_create = date.format(conversations[i].date_create, 'YYYY-MM-DD HH:mm:ss')
+        }
+        response.ok(res, conversations);
     }
-    response.ok(res, res_conversations);
+    catch (error) {
+        console.log(error);
+        logger('sosmed/conversation_chats', error);
+    }
 }
 
 const end_chat = async function (req, res) {
-    const { chat_id } = req.body;
-    const res_endchat = await knex.raw(`
-        UPDATE chats SET flag_end='Y' WHERE chat_id=${chat_id}
-		INSERT INTO chats_end SELECT * FROM chats WHERE flag_end='Y'
-		DELETE chats WHERE flag_end='Y'
-    `);
-    response.ok(res, res_endchat);
+    try {
+        const { chat_id, customer_id } = req.body;
+        const res_endchat = await knex.raw(`
+            UPDATE chats SET flag_end='Y' WHERE chat_id='${chat_id}' AND customer_id='${customer_id}'
+            -- INSERT INTO chats_end SELECT * FROM chats WHERE flag_end='Y'
+            -- DELETE chats WHERE flag_end='Y'
+        `);
+        response.ok(res, res_endchat);
+    }
+    catch (error) {
+        console.log(error);
+        logger('sosmed/end_chat', error);
+    }
+
 }
 
 
@@ -124,7 +140,7 @@ const customer_join = async function (data) {
         .where({
             email: data.email,
             flag_to: 'customer',
-            status_chat: 'open',
+            // status_chat: 'open',
             flag_end: 'N',
             channel: 'Chat',
         }).first();
@@ -218,15 +234,21 @@ const send_message_agent = async function (req) {
 }
 
 const update_socket = async function (data) {
-    if (data.flag_to === 'customer') {
-        await knex('customers')
-            .update({ uuid: data.uuid, connected: data.connected })
-            .where({ email: data.email });
-    }
-    else {
-        await knex('users')
-            .update({ uuid: data.uuid, connected: data.connected })
-            .where({ username: data.username, user_level: 'Layer1' });
+    try {
+        if (data.flag_to === 'customer') {
+            await knex('customers')
+                .update({ uuid: data.uuid, connected: data.connected })
+                .where({ email: data.email });
+        }
+        else {
+            await knex('users')
+                .update({ uuid: data.uuid, connected: data.connected })
+                .where({ username: data.username, user_level: 'Layer1' });
+        }
+    } 
+    catch (error) {
+        console.log(error);
+        logger('sosmed/update_socket', error);
     }
 }
 

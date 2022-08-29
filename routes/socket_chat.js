@@ -79,7 +79,7 @@ module.exports = function (io) {
 
         socket.on('disconnect', (res) => {
             const { username, flag_to, email } = socket.handshake.auth;
-            if (flag_to !== 'blending') {
+            if (username || email) {
                 update_socket({ username, flag_to, email, uuid: socket.id, connected: socket.connected });
             }
             delete users[socket.id];
