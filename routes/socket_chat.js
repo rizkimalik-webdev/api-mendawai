@@ -37,7 +37,7 @@ module.exports = function (io) {
 
         socket.on('send-message-customer', (data) => {
             socket.to(data.uuid_agent).emit('return-message-customer', data);
-            // if (data.blending === true) return;
+            if (data.status_chat === 'waiting') return;
             send_message_customer(data);
         });
 

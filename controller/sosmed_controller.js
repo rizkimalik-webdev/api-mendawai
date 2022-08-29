@@ -148,8 +148,8 @@ const customer_join = async function (data) {
     if (result) {
         const user = await knex('users').select('uuid').where({ username: result.agent_handle }).first();
         const cust = await knex('customers').select('uuid').where({ email: data.email }).first();
-        result.uuid_agent = user.uuid;
-        result.uuid_customer = cust.uuid;
+        result.uuid_agent = user?.uuid;
+        result.uuid_customer = cust?.uuid;
     }
 
     return result;
@@ -245,7 +245,7 @@ const update_socket = async function (data) {
                 .update({ uuid: data.uuid, connected: data.connected })
                 .where({ username: data.username, user_level: 'Layer1' });
         }
-    } 
+    }
     catch (error) {
         console.log(error);
         logger('sosmed/update_socket', error);
