@@ -81,6 +81,7 @@ module.exports = function (io) {
             const { username, flag_to, email } = socket.handshake.auth;
             if (username || email) {
                 update_socket({ username, flag_to, email, uuid: socket.id, connected: socket.connected });
+                socket.to(socket.id).emit('return-disconnect', 'disconnect');
             }
             delete users[socket.id];
             console.log(`⛔[${flag_to}] ${username} - ${email} : ID ${socket.id}, connected:${socket.connected}, ${res} `);

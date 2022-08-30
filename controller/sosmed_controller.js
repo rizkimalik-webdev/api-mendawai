@@ -39,7 +39,7 @@ const list_customers = async function (req, res) {
         LEFT JOIN users c ON a.agent_handle=c.username
         WHERE a.flag_end='N' AND a.flag_to='customer' AND a.agent_handle='${agent}' 
         GROUP BY a.chat_id,a.customer_id,b.name,a.email,a.agent_handle,b.uuid,b.connected,c.uuid
-        -- ORDER BY b.connected DESC
+        ORDER BY b.connected DESC
     `); //query with mysql
 
     response.ok(res, list_customers[0]);
@@ -48,6 +48,8 @@ const list_customers = async function (req, res) {
 const conversation_chats = async function (req, res) {
     try {
         const { chat_id, customer_id } = req.body;
+
+        await knex('chats').update({ flag_notif: '1' }).where({ chat_id, customer_id }); //flag read notif
         const conversations = await knex('chats')
             .select('chat_id', 'customer_id', 'name', 'email', 'flag_to', 'message', 'date_create', 'channel', 'flag_notif')
             .where({ chat_id, customer_id, flag_end: 'N' })
