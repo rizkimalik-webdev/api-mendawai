@@ -8,18 +8,18 @@ module.exports = function (io) {
     //? middleware auth.username
     io.use((socket, next) => {
         const { flag_to, username, email } = socket.handshake.auth;
-        // if (!username) {
-        //     const err = new Error("not authorized");
-        //     next(err);
-        //     // console.log(`⛔[${flag_to}]${username} - ${email} : ID ${socket.id}, not authorized`);
-        // }
-        // else {
-        socket.username = username;
-        socket.flag_to = flag_to;
-        socket.email = email;
-        next();
-        console.log(`✅[${flag_to}] ${username} - ${email} : ID ${socket.id}, auth success`);
-        // }
+        if (!username) {
+            const err = new Error("not authorized");
+            next(err);
+            // console.log(`⛔[${flag_to}]${username} - ${email} : ID ${socket.id}, not authorized`);
+        }
+        else {
+            socket.username = username;
+            socket.flag_to = flag_to;
+            socket.email = email;
+            next();
+            console.log(`✅[${flag_to}] ${username} - ${email} : ID ${socket.id}, auth success`);
+        }
     });
 
     io.on('connection', (socket) => {
