@@ -37,7 +37,7 @@ module.exports = function (io) {
 
         socket.on('send-message-customer', (data) => {
             socket.to(data.uuid_agent).emit('return-message-customer', data);
-            // if (data.blending === true) return;
+            if (data.status_chat === 'waiting') return;
             send_message_customer(data);
         });
 
@@ -79,8 +79,9 @@ module.exports = function (io) {
 
         socket.on('disconnect', (res) => {
             const { username, flag_to, email } = socket.handshake.auth;
-            if (flag_to !== 'blending') {
+            if (username || email) {
                 update_socket({ username, flag_to, email, uuid: socket.id, connected: socket.connected });
+                socket.to(socket.id).emit('return-disconnect', 'disconnect');
             }
             delete users[socket.id];
             console.log(`⛔[${flag_to}] ${username} - ${email} : ID ${socket.id}, connected:${socket.connected}, ${res} `);
