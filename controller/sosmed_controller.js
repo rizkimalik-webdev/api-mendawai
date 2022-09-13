@@ -35,14 +35,14 @@ const list_customers = async function (req, res) {
         SELECT a.chat_id,a.customer_id,b.name,a.email,a.agent_handle,b.uuid as uuid_customer,b.connected, c.uuid as uuid_agent,
         (select count(*) from chats WHERE flag_to='customer' AND chat_id=a.chat_id and flag_notif is null) as total_chat 
         FROM chats a
-        LEFT JOIN customers b ON a.email=b.email
-        LEFT JOIN users c ON a.agent_handle=c.username
+        LEFT JOIN mcustomer b ON a.email=b.email
+        LEFT JOIN msuser c ON a.agent_handle=c.username
         WHERE a.flag_end='N' AND a.flag_to='customer' AND a.agent_handle='${agent}' 
         GROUP BY a.chat_id,a.customer_id,b.name,a.email,a.agent_handle,b.uuid,b.connected,c.uuid
         ORDER BY b.connected DESC
-    `); //query with mysql
+    `); 
 
-    response.ok(res, list_customers[0]);
+    response.ok(res, list_customers);
 }
 
 const conversation_chats = async function (req, res) {
@@ -84,6 +84,29 @@ const end_chat = async function (req, res) {
 
 }
 
+const history_chats = async function (req, res) {
+    //history chat status end
+    try {
+        const { chat_id, customer_id } = req.body;
+
+        await knex('chats').update({ flag_notif: '1' }).where({ chat_id, customer_id }); //flag read notif
+        const conversations = await knex('chats')
+            .select('chat_id', 'customer_id', 'name', 'email', 'flag_to', 'message', 'date_create', 'channel', 'flag_notif')
+            .where({ chat_id, customer_id, flag_end: 'N' })
+            .orderBy('id', 'asc')
+
+        for (let i = 0; i < conversations.length; i++) {
+            conversations[i].date_create = conversations[i].date_create.toISOString().replace(/T/, ' ').replace(/\..+/, '');
+            // conversations[i].date_create = date.format(conversations[i].date_create, 'YYYY-MM-DD HH:mm:ss')
+        }
+        response.ok(res, conversations);
+    }
+    catch (error) {
+        console.log(error);
+        logger('sosmed/history_chats', error);
+    }
+}
+
 
 //? NON HTTP FUNCTION
 const customer_join = async function (data) {
@@ -91,24 +114,24 @@ const customer_join = async function (data) {
     const generate_chatid = date.format(now, 'YYYYMMDDHHmmSSSmmSSS');
     const generate_customerid = date.format(now, 'YYMMDDHHmmSS');
 
-    const customer = await knex('customers').select('customer_id').where({ email: data.email }).first();
-    const customer_id = customer ? customer.customer_id : generate_customerid;
+    const customer = await knex('mcustomer').select('customerid').where({ email: data.email }).first();
+    const customer_id = customer ? customer.customerid : generate_customerid;
 
     if (!customer) {
-        await knex('customers')
+        await knex('mcustomer')
             .insert([{
-                customer_id: customer_id,
+                customerid: customer_id,
                 name: data.username,
                 email: data.email,
                 uuid: data.uuid,
                 connected: data.connected,
-                source: 'Chat',
+                sourcecreate: 'Chat',
                 status: 'Initialize',
-                created_at: knex.fn.now()
+                datecreatecustomer: knex.fn.now()
             }]);
     }
     else {
-        await knex('customers').update({ uuid: data.uuid, connected: data.connected }).where({ email: data.email });
+        await knex('mcustomer').update({ uuid: data.uuid, connected: data.connected }).where({ email: data.email });
     }
 
     const chat = await knex('chats').select('chat_id')
@@ -148,8 +171,8 @@ const customer_join = async function (data) {
         }).first();
 
     if (result) {
-        const user = await knex('users').select('uuid').where({ username: result.agent_handle }).first();
-        const cust = await knex('customers').select('uuid').where({ email: data.email }).first();
+        const user = await knex('msuser').select('uuid').where({ username: result.agent_handle }).first();
+        const cust = await knex('mcustomer').select('uuid').where({ email: data.email }).first();
         result.uuid_agent = user?.uuid;
         result.uuid_customer = cust?.uuid;
     }
@@ -158,12 +181,12 @@ const customer_join = async function (data) {
 }
 
 const agent_join = async function (data) {
-    const user = await knex('users').select('username').where({ username: data.username }).first();
+    const user = await knex('msuser').select('username').where({ username: data.username }).first();
 
     if (user) {
-        await knex('users')
+        await knex('msuser')
             .update({ uuid: data.uuid, connected: data.connected, login: '1' })
-            .where({ username: data.username, user_level: 'Layer1' });
+            .where({ username: data.username, leveluser: 'Layer 1' });
     }
 
     return user;
@@ -238,14 +261,14 @@ const send_message_agent = async function (req) {
 const update_socket = async function (data) {
     try {
         if (data.flag_to === 'customer') {
-            await knex('customers')
+            await knex('mcustomer')
                 .update({ uuid: data.uuid, connected: data.connected })
                 .where({ email: data.email });
         }
         else {
-            await knex('users')
+            await knex('msuser')
                 .update({ uuid: data.uuid, connected: data.connected })
-                .where({ username: data.username, user_level: 'Layer1' });
+                .where({ username: data.username, leveluser: 'Layer 1' });
         }
     }
     catch (error) {
@@ -262,4 +285,5 @@ module.exports = {
     conversation_chats,
     end_chat,
     update_socket,
+    history_chats,
 }
