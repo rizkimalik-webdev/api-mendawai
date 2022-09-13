@@ -49,8 +49,7 @@ const api = require('./routes/api');
 api(app);
 
 //? routes socket endpoint
-// const socket = require('./routes/socket');
-const socket = require('./routes/socket_chat');
+const socket = require('./routes/socket');
 socket(io);
 
 server.listen(port, () => {
