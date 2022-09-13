@@ -8,6 +8,7 @@ const user = require('../controller/users_controller');
 const customer = require('../controller/customer_controller');
 const channel = require('../controller/customer_channel_controller');
 const socmed = require('../controller/sosmed_controller');
+const call = require('../controller/call_controller');
 const ticket = require('../controller/ticket_controller');
 const todolist = require('../controller/todolist_controller');
 const { facebook, twitter, instagram } = require('../controller/hooks');
@@ -123,6 +124,11 @@ module.exports = function (app) {
         api.route('/list_customers').get(socmed.list_customers);
         api.route('/conversation_chats').post(socmed.conversation_chats);
         api.route('/end_chat').post(socmed.end_chat);
+    });
+    
+    app.prefix('/call', function (api) {
+        api.route('/list').post(call.list_call);
+        // api.route('/insert').post(call.insert_call);
     });
 
     app.prefix('/hooks', function (api) {
