@@ -6,7 +6,8 @@ const knex = require('knex')({
         password: process.env.DB_PASS,
         database: process.env.DB_DATABASE,
         options: {
-            encrypt: false
+            encrypt: false,
+            trustedConnection: true
         }
     }
 });
