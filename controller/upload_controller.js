@@ -17,7 +17,7 @@ const upload = async function (req, res) {
             fs.mkdirSync(directory, { recursive: true });
         }
 
-        if(!allowedExtensions.test(extension)) throw "Invalid File type";
+        if (!allowedExtensions.test(extension)) throw "Invalid File type";
         if (size > 5000000) throw "max file 5MB";
         const md5 = file.md5;
         const url = `${directory + md5 + extension}`;
@@ -31,4 +31,20 @@ const upload = async function (req, res) {
     }
 }
 
-module.exports = { upload }
+const read = async function (req, res) {
+    try {
+        const directory = `./${process.env.DIR_ATTACHMENT}/`;
+        fs.readdir(directory, (err, files) => {
+            if (err) return console.log(err);
+            files.forEach(file => {
+                // console.log(file);
+                res.json({ message: file });
+            });
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error })
+    }
+}
+
+module.exports = { upload, read }
