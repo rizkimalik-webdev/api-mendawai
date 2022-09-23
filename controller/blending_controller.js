@@ -1,42 +1,43 @@
 'use strict';
-const knex = require('../config/db_connect');
-const date = require('date-and-time');
+// const knex = require('../config/db_connect');
 const logger = require('../helper/logger');
 const response = require('../helper/json_response');
 
-
-const blending = async function (req, res) {
+const send_message_cust = function (req, res, io) {
     try {
-        const chat = await knex('chats')
-            .select('chat_id')
-            .where({
-                agent_handle: null,
-                status_chat: 'waiting',
-                flag_to: 'customer',
-                flag_end: 'N'
-            }).first();
-        const { username } = await knex('users')
-            .select('username')
-            .where({
-                user_level: 'Layer1',
-                login: 1,
-                chat: true
-            })
-            .first();
-
-        if (chat && username) {
-            await knex('chats')
-                .update({ agent_handle: username, date_assign: knex.fn.now() })
-                .where({ chat_id: chat.chat_id })
-        }
-        
-        response.ok(res, chat);
+        const data = req.body;
+        io.to(data.agent_handle).emit('send-message-customer', data);
+        response.ok(res, data);
     } catch (error) {
         console.log(error);
-        logger('sosmed/blending', error);
+        logger('blending/send_message_cust', error);
+    }
+}
+
+const send_message_agent = function (req, res, io) {
+    try {
+        const data = req.body;
+        io.to(data.email).emit('send-message-agent', data);
+        response.ok(res, data);
+    } catch (error) {
+        console.log(error);
+        logger('blending/send_message_cust', error);
+    }
+}
+
+const queing_chat = function (req, res, io) {
+    try {
+        const data = req.body;
+        io.to(data.email).emit('queing', data);
+        response.ok(res, data);
+    } catch (error) {
+        console.log(error);
+        logger('blending/send_message_cust', error);
     }
 }
 
 module.exports = {
-    blending
+    send_message_cust,
+    send_message_agent,
+    queing_chat,
 }
