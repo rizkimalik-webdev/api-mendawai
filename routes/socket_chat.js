@@ -18,17 +18,19 @@ module.exports = function (socket) {
         console.log(`${val.email}, join chat: ${val.chat_id}`);
     });
 
+    
     socket.on('send-message-customer', (data) => {
+        // console.table(data);
         // socket.to(data.uuid_agent).emit('return-message-customer', data);
-        socket.to(data.username).emit('return-message-customer', data);
+        socket.to(data.agent_handle).emit('return-message-customer', data);
         if (data.status_chat === 'waiting') return;
         send_message_customer(data);
     });
 
+
     socket.on('send-message-agent', (data) => {
-        // console.log(`message-agent : ` + JSON.stringify(data));
         // socket.to(data.uuid_customer).emit('return-message-agent', data);
-        socket.to(data.username).emit('return-message-agent', data);
+        socket.to(data.email).emit('return-message-agent', data);
         send_message_agent(data);
     });
 

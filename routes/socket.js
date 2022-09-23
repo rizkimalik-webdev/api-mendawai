@@ -27,7 +27,13 @@ module.exports = function (io) {
     io.on('connection', (socket) => {
         let users = {}
         users[socket.id] = socket.id;
-        socket.join(socket.username);
+
+        if (socket.flag_to === 'customer') {
+            socket.join(socket.email);
+        } else {
+            socket.join(socket.username);
+        }
+
 
         socket_chat(socket); //module chat
         socket_webrtc(socket); //module call webrtc
@@ -42,5 +48,7 @@ module.exports = function (io) {
             console.log(`⛔[${flag_to}] ${username} - ${email} : ID ${socket.id}, connected:${socket.connected}, ${res} `);
         });
     });
+
+
 
 }
