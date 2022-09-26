@@ -1,8 +1,10 @@
 'use strict';
-const knex = require('../config/db_connect');
+const path = require('path');
 const date = require('date-and-time');
+const knex = require('../config/db_connect');
 const logger = require('../helper/logger');
 const response = require('../helper/json_response');
+const { UploadAttachment } = require('./upload_controller');
 
 //? HTTP FUNCTION
 const join_chat = async function (req, res) {
@@ -51,7 +53,7 @@ const conversation_chats = async function (req, res) {
 
         await knex('chats').update({ flag_notif: '1' }).where({ chat_id, customer_id }); //flag read notif
         const conversations = await knex('chats')
-            .select('chat_id', 'customer_id', 'name', 'email', 'flag_to', 'message', 'date_create', 'channel', 'flag_notif')
+            .select('chat_id', 'customer_id', 'name', 'email', 'flag_to', 'message', 'date_create', 'channel', 'flag_notif','file_name','file_type','file_size','file_url', 'file_origin')
             .where({ chat_id, customer_id, flag_end: 'N' })
             .orderBy('id', 'asc')
 
@@ -200,8 +202,14 @@ const send_message_customer = async function (req) {
             name,
             email,
             message,
-            agent_handle
+            agent_handle,
+            file_origin, 
+            file_name, 
+            file_url, 
+            file_size,
+            attachment
         } = req;
+        const file_type = file_name ? path.extname(file_name) : null;
 
         await knex('chats')
             .insert([{
@@ -211,12 +219,22 @@ const send_message_customer = async function (req) {
                 email,
                 message,
                 agent_handle,
+                file_origin, 
+                file_name, 
+                file_type, 
+                file_url, 
+                file_size,
                 channel: 'Chat',
                 flag_to: 'customer',
                 status_chat: 'open',
                 flag_end: 'N',
                 date_create: knex.fn.now()
             }]);
+
+        //upload file attachment
+        if (attachment) {
+            await UploadAttachment(attachment,file_name, file_size);
+        }
 
     }
     catch (error) {
@@ -233,8 +251,14 @@ const send_message_agent = async function (req) {
             name,
             email,
             message,
-            agent_handle
+            agent_handle,
+            file_origin, 
+            file_name, 
+            file_url, 
+            file_size,
+            attachment
         } = req;
+        const file_type = file_name ? path.extname(file_name) : null;
 
         await knex('chats')
             .insert([{
@@ -244,12 +268,22 @@ const send_message_agent = async function (req) {
                 email,
                 message,
                 agent_handle,
+                file_origin, 
+                file_name, 
+                file_type, 
+                file_url, 
+                file_size,
                 channel: 'Chat',
                 flag_to: 'agent',
                 status_chat: 'open',
                 flag_end: 'N',
                 date_create: knex.fn.now()
             }]);
+
+        //upload file attachment
+        if (attachment) {
+            await UploadAttachment(attachment,file_name, file_size);
+        }
 
     }
     catch (error) {
