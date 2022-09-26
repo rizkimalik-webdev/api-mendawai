@@ -36,31 +36,22 @@ module.exports = function (socket) {
 
 
     socket.on('queing', (data) => {
-        socket.to(data.uuid_customer).emit('return-queing', data);
-        // if (data.flag_to === 'customer') {
-        // socket.to(data.uuid_customer).emit('return-queing', data);
-        // } else {
-        //     socket.to(data.uuid_agent).emit('return-queing', data);
-        // }
+        socket.to(data.email).emit('return-queing', data);
     });
 
     socket.on('typing', (data) => {
         if (data.flag_to === 'customer') {
-            socket.to(data.uuid_agent).emit('return-typing', data);
+            socket.to(data.agent_handle).emit('return-typing', data);
         } else {
-            socket.to(data.uuid_customer).emit('return-typing', data);
+            socket.to(data.email).emit('return-typing', data);
         }
     });
 
     socket.on('reconnect', (data) => {
         console.log(`recconnect ${data.email}`)
+        socket.to(data.agent_handle).emit('return-reconnect', data);
         update_socket(data);
-
-        if (data.flag_to === 'customer') {
-            socket.to(data.uuid_agent).emit('return-reconnect', data);
-        } else {
-            socket.to(data.uuid_customer).emit('return-reconnect', data);
-        }
+        
     });
 
 }
