@@ -34,7 +34,6 @@ module.exports = function (io) {
             socket.join(socket.username);
         }
 
-
         socket_chat(socket); //module chat
         socket_webrtc(socket); //module call webrtc
 
